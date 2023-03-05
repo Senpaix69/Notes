@@ -179,11 +179,11 @@ const ShowCard = ({
                       {card.text}
                     </p>
                     {card.attachment && (
-                      <div className="rounded-lg border-2 border-purple-200 shadow-md p-5 mt-4">
+                      <div className="rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4">
                         <img
                           src={card.attachment}
                           alt="pic"
-                          className="rounded-lg"
+                          className="rounded-lg shadow-lg"
                         />
                       </div>
                     )}
