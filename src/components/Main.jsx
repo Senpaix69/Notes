@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import Header from "./Header";
 import Cards from "./Cards";
-import bg from "../images/bg3.png";
+import bg from "../images/bg1.jpg";
 import plus from "../images/plus.png";
 import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
