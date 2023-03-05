@@ -166,7 +166,7 @@ const Form = (props) => {
           accept="image"
           onChange={(e) => props.setAttachment(e.target.files[0])}
         />
-        {!imageRead ? (
+        {!imageRead && !props.formData?.attachment ? (
           <div className="mt-2 w-full flex text-white">
             <button
               type="button"
