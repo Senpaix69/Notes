@@ -178,6 +178,15 @@ const ShowCard = ({
                     >
                       {card.text}
                     </p>
+                    {card.attachment && (
+                      <div className="rounded-lg border-2 border-purple-200 shadow-md p-5 mt-4">
+                        <img
+                          src={card.attachment}
+                          alt="pic"
+                          className="rounded-lg"
+                        />
+                      </div>
+                    )}
                     {card.link && (
                       <div className="my-4 flex items-start justify-start gap-2 text-sm">
                         <h1 className="font-bold">Link:</h1>
@@ -191,7 +200,6 @@ const ShowCard = ({
                         </a>
                       </div>
                     )}
-                    {card.attachment && <img src={card.attachment} alt="pic" />}
                     <p className="mt-8 text-xs">
                       <span className="font-semibold">date:</span> {card.date}
                     </p>
