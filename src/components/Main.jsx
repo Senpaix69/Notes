@@ -17,19 +17,27 @@ import bg from "../images/bg3.jpg";
 import plus from "../images/plus.png";
 import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
+import Loading from "./Loading";
 
 const Main = ({ logOut, user }) => {
   const date = new Date();
   const [index, setIndex] = useState(-1);
   const [addCard, setAddCard] = useState(false);
+  const [list, setList] = useState([true, false]);
+  const [loading, setLoading] = useState([false, false]);
   const [cards, setCards] = useState([]);
   const [senpaiNotes, setSenpaiNotes] = useState([]);
   const [isNoteEditable, setIsNoteEditable] = useState(false);
   const collRef = collection(db, "notes");
 
+  const triggerLoading = (index, value) => {
+    setLoading((prev) => prev.map((_, i) => (i === index ? value : false)));
+  };
+
   useEffect(() => {
     let unsub;
     if (user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72") {
+      triggerLoading(1, true);
       unsub = onSnapshot(
         query(
           collRef,
@@ -42,8 +50,12 @@ const Main = ({ logOut, user }) => {
             id: doc.id,
           }));
           setSenpaiNotes(data);
+          triggerLoading(1, true);
         },
-        (error) => alert(error.message)
+        (error) => {
+          triggerLoading(1, false);
+          alert(error.message);
+        }
       );
     }
     return () => {
@@ -52,6 +64,7 @@ const Main = ({ logOut, user }) => {
   }, []);
 
   useEffect(() => {
+    triggerLoading(0, true);
     const senpai = user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72";
     const refQuery = senpai
       ? query(collRef, orderBy("date", "desc"))
@@ -64,8 +77,12 @@ const Main = ({ logOut, user }) => {
           id: doc.id,
         }));
         setCards(data);
+        triggerLoading(0, false);
       },
-      (error) => alert(error.message)
+      (error) => {
+        triggerLoading(0, false);
+        alert(error.message);
+      }
     );
     return () => unsub();
   }, []);
@@ -94,6 +111,10 @@ const Main = ({ logOut, user }) => {
     setIsNoteEditable(
       isNoteEditable || user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72"
     );
+  };
+
+  const switchList = (ind) => {
+    setList(list.map((_, i) => (i === ind ? true : false)));
   };
 
   return (
@@ -140,44 +161,73 @@ const Main = ({ logOut, user }) => {
             <Header user={user} logOut={logOut} />
           </section>
 
-          <section className="mt-32">
+          <section className="mt-32 mb-4">
             {user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" && (
-              <h1 className="p-1 px-3 font-bold">Notes by Senpai</h1>
+              <ul className="m-4 flex items-center justify-start gap-2">
+                <button
+                  disabled={list[0]}
+                  type="button"
+                  className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
+                    list[0] ? "bg-purple-800" : ""
+                  }`}
+                  onClick={() => switchList(0)}
+                >
+                  Your Notes
+                </button>
+                <button
+                  type="button"
+                  className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
+                    list[1] ? "bg-purple-800" : ""
+                  }`}
+                  onClick={() => switchList(1)}
+                >
+                  Senpai Notes
+                </button>
+              </ul>
             )}
-            {user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" &&
-              senpaiNotes?.map((card, index) => (
-                <Cards
-                  key={card.id}
-                  id={index}
-                  card={card.data}
-                  setIndex={handleIndex}
-                />
+            {list[1] &&
+              user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" &&
+              (!loading[1] ? (
+                <>
+                  {senpaiNotes?.map((card, index) => (
+                    <Cards
+                      key={card.id}
+                      id={index}
+                      card={card.data}
+                      setIndex={handleIndex}
+                    />
+                  ))}
+                  {senpaiNotes.length === 0 && (
+                    <h2 className="mt-10 w-full text-center font-semibold">
+                      Empty: No Notes Available😶
+                    </h2>
+                  )}
+                </>
+              ) : (
+                <Loading />
               ))}
-            {senpaiNotes.length === 0 &&
-              user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" && (
-                <h2 className="w-full text-center font-semibold">
-                  Empty: No Notes Available😶
-                </h2>
-              )}
-            <h1 className="p-1 px-3 font-bold">
-              {user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72"
-                ? "Your Notes"
-                : "All Notes"}
-            </h1>
-            {cards?.map((card, index) => (
-              <Cards
-                user={user.uid}
-                key={card.id}
-                id={index}
-                card={card.data}
-                setIndex={handleIndex}
-              />
-            ))}
-            {cards.length === 0 && (
-              <h2 className="w-full text-center font-semibold">
-                Empty: Add Some Notes😃
-              </h2>
-            )}
+
+            {list[0] &&
+              (!loading[0] ? (
+                <>
+                  {cards?.map((card, index) => (
+                    <Cards
+                      user={user.uid}
+                      key={card.id}
+                      id={index}
+                      card={card.data}
+                      setIndex={handleIndex}
+                    />
+                  ))}
+                  {cards.length === 0 && (
+                    <h2 className="mt-10 w-full text-center font-semibold">
+                      Empty: Add Some Notes😃
+                    </h2>
+                  )}
+                </>
+              ) : (
+                <Loading />
+              ))}
           </section>
         </div>
       </div>
