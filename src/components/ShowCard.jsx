@@ -2,15 +2,7 @@ import React, { useEffect, useState } from "react";
 import butterFly from "../images/butterfly.png";
 import Form from "./Form";
 
-const ShowCard = ({
-  setCardShow,
-  id,
-  card,
-  deleteNote,
-  updateNote,
-  notEditable,
-  setIsNoteEditable,
-}) => {
+const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
   const [dropDown, setDropDown] = useState(false);
   const [editNote, setEditNote] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,6 +21,7 @@ const ShowCard = ({
       attachment: card?.attachment,
       label: card?.label,
       link: card?.link,
+      user: card?.users || [],
       date: card?.date,
     });
     setTitleActive(true);
@@ -61,7 +54,6 @@ const ShowCard = ({
             setBackCall((prev) => !prev);
             setDropDown(false);
             setEditNote(false);
-            setIsNoteEditable(false);
           }}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -89,7 +81,7 @@ const ShowCard = ({
 
           <div
             className={`absolute right-5 top-10 z-20 ${
-              notEditable ? "" : "hidden"
+              card?.uid === user ? "" : "hidden"
             }`}
           >
             <div className="relative inline-block text-left">

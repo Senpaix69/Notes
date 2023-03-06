@@ -9,7 +9,6 @@ import {
   orderBy,
   deleteDoc,
   doc,
-  where,
 } from "firebase/firestore";
 import Header from "./Header";
 import Cards from "./Cards";
@@ -26,71 +25,27 @@ const Main = ({ logOut, user }) => {
   const [menu, setMenu] = useState(false);
   const [addCard, setAddCard] = useState(false);
   const [list, setList] = useState([true, false]);
-  const [loading, setLoading] = useState([false, false]);
+  const [loading, setLoading] = useState(false);
   const [cards, setCards] = useState([]);
-  const [senpaiNotes, setSenpaiNotes] = useState([]);
-  const [isNoteEditable, setIsNoteEditable] = useState(false);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const collRef = collection(db, "notes");
-
-  const triggerLoading = (index, value) => {
-    setLoading((prev) => prev.map((_, i) => (i === index ? value : false)));
-  };
 
   useEffect(() => setSearch(""), [list]);
   useEffect(() => {
-    let unsub;
-    if (user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72") {
-      triggerLoading(1, true);
-      unsub = onSnapshot(
-        query(
-          collRef,
-          orderBy("imp", "desc"),
-          orderBy("date", "desc"),
-          where("uid", "==", "6MiSvUG1upfAn5OVUyybiSaUnU72")
-        ),
-        (res) => {
-          const data = res.docs?.map((doc) => ({
-            data: doc.data(),
-            id: doc.id,
-          }));
-          setSenpaiNotes(data);
-          triggerLoading(1, false);
-        },
-        (error) => {
-          triggerLoading(1, false);
-          alert(error.message);
-        }
-      );
-    }
-    return () => {
-      unsub && unsub();
-    };
-  }, []);
-
-  useEffect(() => {
-    triggerLoading(0, true);
-    const senpai = user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72";
-    const refQuery = senpai
-      ? query(collRef, orderBy("imp", "desc"), orderBy("date", "desc"))
-      : query(
-          collRef,
-          orderBy("imp", "desc"),
-          orderBy("date", "desc"),
-          where("uid", "==", user?.uid)
-        );
+    setLoading(true);
     const unsub = onSnapshot(
-      refQuery,
+      query(collRef, orderBy("imp", "desc"), orderBy("date", "desc")),
       (res) => {
         const data = res.docs?.map((doc) => ({
           data: doc.data(),
           id: doc.id,
         }));
         setCards(data);
-        triggerLoading(0, false);
+        setLoading(false);
       },
       (error) => {
-        triggerLoading(0, false);
+        setLoading(false);
         alert(error.message);
       }
     );
@@ -117,18 +72,12 @@ const Main = ({ logOut, user }) => {
       .catch((err) => alert(err.message));
   };
 
-  const handleIndex = (card, isNoteEditable) => {
-    setCardShow(card);
-    setIsNoteEditable(
-      isNoteEditable || user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72"
-    );
-  };
-
   const switchList = (ind) => {
+    setSortBy(ind === 0 ? "" : "senpai");
     setList(list.map((_, i) => (i === ind ? true : false)));
   };
 
-  const filteredNotes = (notes) => {
+  const filteredNotesBySearch = (notes) => {
     return notes.filter(
       (card) =>
         card.data.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -139,6 +88,17 @@ const Main = ({ logOut, user }) => {
         card.data.label.toLowerCase().includes(search.toLowerCase())
     );
   };
+  const filteredNotesByName = (notes) => {
+    return sortBy
+      ? notes.filter(
+          (card) =>
+            card.data.name.toLowerCase().includes(sortBy) &&
+            card.data.users?.includes(user.name)
+        )
+      : user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72"
+      ? notes.filter((card) => card.data.uid === user.uid)
+      : notes;
+  };
 
   return (
     <div>
@@ -148,9 +108,8 @@ const Main = ({ logOut, user }) => {
       >
         <section hidden={addCard || cardShow === undefined}>
           <ShowCard
+            user={user.uid}
             deleteNote={deleteNote}
-            notEditable={isNoteEditable}
-            setIsNoteEditable={setIsNoteEditable}
             setCardShow={setCardShow}
             card={cardShow?.data}
             id={cardShow?.id}
@@ -219,44 +178,27 @@ const Main = ({ logOut, user }) => {
             <span className="w-full ml-2 p-2 font-light font-serif bg-inherit text-xs">
               Note: The notes are sorted by importance and date
             </span>
-
-            {list[1] &&
-              user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" &&
-              (!loading[1] ? (
-                <>
-                  {filteredNotes(senpaiNotes)?.map((card, index) => (
-                    <Cards key={index} card={card} setCardShow={handleIndex} />
-                  ))}
-                  {senpaiNotes.length === 0 && (
-                    <h2 className="mt-10 w-full text-center font-semibold">
-                      Empty: No Notes Available😶
-                    </h2>
-                  )}
-                </>
-              ) : (
-                <Loading />
-              ))}
-
-            {list[0] &&
-              (!loading[0] ? (
-                <>
-                  {filteredNotes(cards)?.map((card, index) => (
+            {!loading ? (
+              <>
+                {filteredNotesBySearch(filteredNotesByName(cards))?.map(
+                  (card, index) => (
                     <Cards
                       key={index}
                       user={user.uid}
                       card={card}
-                      setCardShow={handleIndex}
+                      setCardShow={setCardShow}
                     />
-                  ))}
-                  {cards.length === 0 && (
-                    <h2 className="mt-10 w-full text-center font-semibold">
-                      Empty: Add Some Notes😃
-                    </h2>
-                  )}
-                </>
-              ) : (
-                <Loading />
-              ))}
+                  )
+                )}
+                {cards.length === 0 && (
+                  <h2 className="mt-10 w-full text-center font-semibold">
+                    Empty: Add Some Notes😃
+                  </h2>
+                )}
+              </>
+            ) : (
+              <Loading />
+            )}
           </section>
         </div>
       </div>

@@ -4,9 +4,7 @@ const Cards = ({ card, setCardShow, user }) => {
   return (
     <div className="relative p-1 px-2 w-full backdrop-blur-sm">
       <button
-        onClick={() =>
-          setCardShow(card, data.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72")
-        }
+        onClick={() => setCardShow(card)}
         className="w-full bg-slate-100 bg-opacity-50 py-3 px-4 rounded-lg"
       >
         <div className="flex items-start justify-start flex-col">
