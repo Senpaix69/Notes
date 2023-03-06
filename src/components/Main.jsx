@@ -18,10 +18,12 @@ import plus from "../images/plus.png";
 import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
 import Loading from "./Loading";
+import SideMenu from "./SideMenu";
 
 const Main = ({ logOut, user }) => {
   const date = new Date();
   const [index, setIndex] = useState(-1);
+  const [menu, setMenu] = useState(false);
   const [addCard, setAddCard] = useState(false);
   const [list, setList] = useState([true, false]);
   const [loading, setLoading] = useState([false, false]);
@@ -41,6 +43,7 @@ const Main = ({ logOut, user }) => {
       unsub = onSnapshot(
         query(
           collRef,
+          orderBy("imp", "desc"),
           orderBy("date", "desc"),
           where("uid", "==", "6MiSvUG1upfAn5OVUyybiSaUnU72")
         ),
@@ -50,7 +53,7 @@ const Main = ({ logOut, user }) => {
             id: doc.id,
           }));
           setSenpaiNotes(data);
-          triggerLoading(1, true);
+          triggerLoading(1, false);
         },
         (error) => {
           triggerLoading(1, false);
@@ -67,8 +70,13 @@ const Main = ({ logOut, user }) => {
     triggerLoading(0, true);
     const senpai = user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72";
     const refQuery = senpai
-      ? query(collRef, orderBy("date", "desc"))
-      : query(collRef, orderBy("date", "desc"), where("uid", "==", user?.uid));
+      ? query(collRef, orderBy("imp", "desc"), orderBy("date", "desc"))
+      : query(
+          collRef,
+          orderBy("imp", "desc"),
+          orderBy("date", "desc"),
+          where("uid", "==", user?.uid)
+        );
     const unsub = onSnapshot(
       refQuery,
       (res) => {
@@ -120,7 +128,7 @@ const Main = ({ logOut, user }) => {
     <div>
       <div
         style={{ backgroundImage: `url(${bg})` }}
-        className="h-screen bg-cover overflow-hidden overflow-y-scroll scrollbar-hide"
+        className="h-screen bg-cover scroll-smooth overflow-hidden overflow-y-scroll scrollbar-hide"
       >
         <section hidden={addCard || index === -1}>
           <ShowCard
@@ -156,8 +164,23 @@ const Main = ({ logOut, user }) => {
           />
         </section>
         <div hidden={addCard || index !== -1}>
+          <div
+            onClick={() => setMenu(false)}
+            className={`absolute top-0 backdrop-blur-sm w-full h-full transition-all ease-in-out duration-500 ${
+              menu ? "z-40 opacity-100" : "opacity-0 -z-10"
+            }`}
+          ></div>
+          <div
+            className={`absolute top-0 w-full backdrop-blur-md max-w-[70%] z-50 transition-all ease-in-out duration-700 ${
+              menu
+                ? "translate-x-0 opacity-100"
+                : "w-0 h-0 -translate-x-full opacity-0"
+            }`}
+          >
+            <SideMenu user={user} logOut={logOut} />
+          </div>
           <section className="fixed top-0 w-full z-30">
-            <Header user={user} logOut={logOut} />
+            <Header user={user} setMenu={setMenu} menu={menu} />
           </section>
 
           <section className="mt-32 mb-4">
@@ -184,6 +207,10 @@ const Main = ({ logOut, user }) => {
                 </button>
               </ul>
             )}
+            <span className="w-full ml-2 p-2 font-light font-serif bg-inherit text-xs">
+              Note: The notes are sorted by importance and date
+            </span>
+
             {list[1] &&
               user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" &&
               (!loading[1] ? (
@@ -234,9 +261,15 @@ const Main = ({ logOut, user }) => {
       <button
         hidden={addCard || index !== -1}
         onClick={() => setAddCard(true)}
-        className="absolute z-50 bottom-5 right-8"
+        className="absolute bottom-5 right-8"
       >
-        <img src={plus} alt="plus" className="h-14 bg-white rounded-full" />
+        <img
+          src={plus}
+          alt="plus"
+          className={`transition-opacity duration-500 ${
+            menu ? "opacity-0 -z-10" : "opacity-100 z-20"
+          } h-14 bg-white rounded-full`}
+        />
       </button>
     </div>
   );

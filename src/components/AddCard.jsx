@@ -64,15 +64,15 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
         <h1 className="text-lg">Add Note</h1>
       </div>
 
-      <div className="mt-32 mb-8 p-4 relative">
-        <div className="absolute w-full max-w-[600px] left-0 -top-5 flex items-center justify-center">
+      <div className="mt-32 mb-8 p-2 relative">
+        <div className="absolute w-full max-w-[600px] left-0 -top-6 flex items-center justify-center">
           <img
             src={butterFly}
             alt="butterfly"
             className="h-16 bg-purple-800 rounded-full z-10"
           />
         </div>
-        <div className="bg-slate-100 bg-opacity-50 backdrop-blur-sm rounded-lg p-6">
+        <div className="bg-slate-100 bg-opacity-50 backdrop-blur-sm rounded-lg px-2 py-6">
           <Form
             backCall={backCall}
             formData={formData}

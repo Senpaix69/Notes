@@ -1,25 +1,29 @@
 import React from "react";
 
-const Header = ({ user, logOut }) => {
+const Header = ({ user, setMenu, menu }) => {
   return (
     <div className="relative max-w-[600px] min-w-[340px] p-2 bg-gradient-to-b from-indigo-500 via-purple-400">
-      <div className="flex justify-center items-center">
-        <svg
-          onClick={logOut}
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-10 h-10 absolute left-5 bg-gradient-to-b from-indigo-500 via-purple-400 bg-opacity-20 rounded-full p-1 cursor-pointer ring-2 ring-purple-500 outline-1 shadow-md"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M4 6h16M4 12h8m-8 6h16"
-          />
-        </svg>
-        <h1 className="font-bold text-[1.2rem] font-serif p-5">{user.name}</h1>
+      <div className="pl-2 py-3 flex justify-left items-center gap-2">
+        <button type="button">
+          <svg
+            onClick={() => setMenu(true)}
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-10 h-10 bg-gradient-to-b from-indigo-500 via-purple-400 bg-opacity-20 rounded-full p-1 ring-2 ring-purple-500 outline-1 shadow-md"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h8m-8 6h16"
+            />
+          </svg>
+        </button>
+        <h1 className="text-fuchsia-900 font-bold text-[1.2rem] font-serif">
+          {user.name}'s <span className="text-white">Notes</span>
+        </h1>
       </div>
 
       {/* Search */}
