@@ -38,7 +38,18 @@ const ShowCard = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    updateNote(id, formData, setLoading, setEditNote);
+    updateNote(
+      id,
+      {
+        ...formData,
+        date:
+          formData?.date.indexOf("M") !== -1
+            ? formData?.date
+            : formData?.date + ", " + new Date().toLocaleTimeString(),
+      },
+      setLoading,
+      setEditNote
+    );
   };
 
   const important = () => {

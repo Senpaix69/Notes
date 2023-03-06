@@ -101,6 +101,19 @@ const Form = (props) => {
           />
         </div>
         <div className="mx-2 border-2 border-purple-500"></div>
+        <div className="relative mt-8">
+          <span className="absolute text-xs top-2 left-2 text-purple-700 -translate-y-6 scale-90">
+            {"Date (optional)"}
+          </span>
+          <input
+            name="date"
+            value={props.formData.date || ""}
+            onChange={(e) => handleChange(e)}
+            type="date"
+            className="block min-h-[auto] w-full text-sm max-w-[150px] rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+          />
+        </div>
+        <div className="mx-2 mb-4 border-2 max-w-[130px] border-purple-500"></div>
         <div className="flex gap-3 items-center justify-start m-2 mb-4 text-sm text-purple-900 font-semibold">
           <input
             type="checkbox"

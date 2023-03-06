@@ -89,10 +89,9 @@ const Main = ({ logOut, user }) => {
 
   const deleteNote = (id) => {
     if (window.confirm("Confirm Delete?")) {
+      setIndex(-1);
       deleteDoc(doc(collRef, `/${id}`))
-        .then(() => {
-          setIndex(-1);
-        })
+        .then(() => {})
         .catch((err) => alert(err.message));
     }
   };

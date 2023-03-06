@@ -22,7 +22,9 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
       text: formData.text,
       imp: formData.imp || false,
       attachment: formData.attachment || "",
-      date: date.toLocaleString(),
+      date: formData.date
+        ? formData.date + ", " + date.toLocaleTimeString()
+        : date.toLocaleString(),
     })
       .then(() => {
         setFormData({});
