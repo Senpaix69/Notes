@@ -3,7 +3,7 @@ import butterFly from "../images/butterfly.png";
 import Form from "./Form";
 
 const ShowCard = ({
-  setIndex,
+  setCardShow,
   id,
   card,
   deleteNote,
@@ -52,17 +52,12 @@ const ShowCard = ({
     );
   };
 
-  const important = () => {
-    setIndex(-1);
-    updateNote(id, { ...formData, imp: !formData.imp });
-  };
-
   return (
     <div>
       <div className="fixed w-full max-w-[600px] top-0 bg-purple-400 px-3 py-4 flex items-center font-bold gap-3 z-50">
         <svg
           onClick={() => {
-            setIndex(-1);
+            setCardShow(undefined);
             setBackCall((prev) => !prev);
             setDropDown(false);
             setEditNote(false);
@@ -156,13 +151,13 @@ const ShowCard = ({
                     <button
                       onClick={() => {
                         setDropDown(false);
-                        important();
+                        updateNote(id, { ...formData, imp: !formData.imp });
                       }}
                       className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-300 w-full text-left"
                       tabIndex="-1"
                       id="menu-item-0"
                     >
-                      {card.imp ? "Not Important" : "Important"}
+                      {card?.imp ? "Not Important" : "Important"}
                     </button>
                   </div>
                 </div>

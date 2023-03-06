@@ -1,31 +1,32 @@
 import React from "react";
-const Cards = ({ card, id, setIndex, user }) => {
+const Cards = ({ card, setCardShow, user }) => {
+  const { data } = card;
   return (
     <div className="relative p-1 px-2 w-full backdrop-blur-sm">
       <button
         onClick={() =>
-          setIndex(id, card.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72")
+          setCardShow(card, data.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72")
         }
         className="w-full bg-slate-100 bg-opacity-50 py-3 px-4 rounded-lg"
       >
         <div className="flex items-start justify-start flex-col">
           <h1 className="font-bold text-purple-800 flex items-center justify-center gap-4">
-            {card?.title}{" "}
+            {data?.title}{" "}
             <span className="text-xs">
               {user === "6MiSvUG1upfAn5OVUyybiSaUnU72"
-                ? "(" + card.name + ")"
+                ? "(" + data.name + ")"
                 : ""}
             </span>
           </h1>
           <p className="text-sm font-semibold truncate max-w-[300px] text-slate-800">
-            {card.text}
+            {data.text}
           </p>
           <div className="text-xs mt-1 text-slate-800 flex items-center justify-between w-full">
-            <h6>{card?.date}</h6>
+            <h6>{data?.date}</h6>
             <div className="flex items-center justify-center gap-2">
-              <span>{card.attachment ? "Attachment" : ""}</span>
+              <span>{data.attachment ? "Attachment" : ""}</span>
               <span>
-                {card.link ? (
+                {data.link ? (
                   <svg
                     className="h-3"
                     xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +39,7 @@ const Cards = ({ card, id, setIndex, user }) => {
             </div>
           </div>
         </div>
-        {card?.imp && (
+        {data?.imp && (
           <svg
             className="absolute right-6 top-5 h-4 fill-purple-800"
             xmlns="http://www.w3.org/2000/svg"

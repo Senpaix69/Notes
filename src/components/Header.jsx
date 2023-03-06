@@ -1,6 +1,6 @@
 import React from "react";
 
-const Header = ({ user, setMenu, menu }) => {
+const Header = ({ user, setMenu, search, setSearch }) => {
   return (
     <div className="relative max-w-[600px] min-w-[340px] p-2 bg-gradient-to-b from-indigo-500 via-purple-400">
       <div className="pl-2 py-3 flex justify-left items-center gap-2">
@@ -46,7 +46,9 @@ const Header = ({ user, setMenu, menu }) => {
         </div>
         <input
           type="text"
-          id="simple-search"
+          value={search}
+          name="search"
+          onChange={(e) => setSearch(e.target.value)}
           className="ring-2 ring-purple-500 outline-none bg-transparent text-black placeholder:text-black text-sm rounded-lg font-semibold block w-full pl-10 p-2.5"
           placeholder="Search"
         />

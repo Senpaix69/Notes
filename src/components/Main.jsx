@@ -22,7 +22,7 @@ import SideMenu from "./SideMenu";
 
 const Main = ({ logOut, user }) => {
   const date = new Date();
-  const [index, setIndex] = useState(-1);
+  const [cardShow, setCardShow] = useState(undefined);
   const [menu, setMenu] = useState(false);
   const [addCard, setAddCard] = useState(false);
   const [list, setList] = useState([true, false]);
@@ -30,12 +30,14 @@ const Main = ({ logOut, user }) => {
   const [cards, setCards] = useState([]);
   const [senpaiNotes, setSenpaiNotes] = useState([]);
   const [isNoteEditable, setIsNoteEditable] = useState(false);
+  const [search, setSearch] = useState("");
   const collRef = collection(db, "notes");
 
   const triggerLoading = (index, value) => {
     setLoading((prev) => prev.map((_, i) => (i === index ? value : false)));
   };
 
+  useEffect(() => setSearch(""), [list]);
   useEffect(() => {
     let unsub;
     if (user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72") {
@@ -97,9 +99,10 @@ const Main = ({ logOut, user }) => {
 
   const deleteNote = (id) => {
     if (window.confirm("Confirm Delete?")) {
-      setIndex(-1);
       deleteDoc(doc(collRef, `/${id}`))
-        .then(() => {})
+        .then(() => {
+          setCardShow(undefined);
+        })
         .catch((err) => alert(err.message));
     }
   };
@@ -107,14 +110,15 @@ const Main = ({ logOut, user }) => {
   const updateNote = (id, formData, setLoading, setEditNote) => {
     updateDoc(doc(collRef, `/${id}`), formData)
       .then(() => {
+        setCardShow({ data: formData, id: id });
         setLoading && setLoading(false);
         setEditNote && setEditNote(false);
       })
       .catch((err) => alert(err.message));
   };
 
-  const handleIndex = (index, isNoteEditable) => {
-    setIndex(index);
+  const handleIndex = (card, isNoteEditable) => {
+    setCardShow(card);
     setIsNoteEditable(
       isNoteEditable || user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72"
     );
@@ -124,32 +128,32 @@ const Main = ({ logOut, user }) => {
     setList(list.map((_, i) => (i === ind ? true : false)));
   };
 
+  const filteredNotes = (notes) => {
+    return notes.filter(
+      (card) =>
+        card.data.name.toLowerCase().includes(search.toLowerCase()) ||
+        card.data.text.toLowerCase().includes(search.toLowerCase()) ||
+        card.data.date.toLowerCase().includes(search.toLowerCase()) ||
+        card.data.title.toLowerCase().includes(search.toLowerCase()) ||
+        card.data.link.toLowerCase().includes(search.toLowerCase()) ||
+        card.data.label.toLowerCase().includes(search.toLowerCase())
+    );
+  };
+
   return (
     <div>
       <div
         style={{ backgroundImage: `url(${bg})` }}
         className="h-screen bg-cover scroll-smooth overflow-hidden overflow-y-scroll scrollbar-hide"
       >
-        <section hidden={addCard || index === -1}>
+        <section hidden={addCard || cardShow === undefined}>
           <ShowCard
             deleteNote={deleteNote}
             notEditable={isNoteEditable}
             setIsNoteEditable={setIsNoteEditable}
-            setIndex={setIndex}
-            card={
-              isNoteEditable
-                ? cards[index]?.data
-                : user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72"
-                ? cards[index]?.data
-                : senpaiNotes[index]?.data
-            }
-            id={
-              isNoteEditable
-                ? cards[index]?.id
-                : user.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72"
-                ? cards[index]?.id
-                : senpaiNotes[index]?.id
-            }
+            setCardShow={setCardShow}
+            card={cardShow?.data}
+            id={cardShow?.id}
             updateNote={updateNote}
           />
         </section>
@@ -163,7 +167,7 @@ const Main = ({ logOut, user }) => {
             collRef={collRef}
           />
         </section>
-        <div hidden={addCard || index !== -1}>
+        <div hidden={addCard || cardShow !== undefined}>
           <div
             onClick={() => setMenu(false)}
             className={`absolute top-0 backdrop-blur-sm w-full h-full transition-all ease-in-out duration-500 ${
@@ -180,7 +184,12 @@ const Main = ({ logOut, user }) => {
             <SideMenu user={user} logOut={logOut} />
           </div>
           <section className="fixed top-0 w-full z-30">
-            <Header user={user} setMenu={setMenu} menu={menu} />
+            <Header
+              user={user}
+              setMenu={setMenu}
+              search={search}
+              setSearch={setSearch}
+            />
           </section>
 
           <section className="mt-32 mb-4">
@@ -215,13 +224,8 @@ const Main = ({ logOut, user }) => {
               user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" &&
               (!loading[1] ? (
                 <>
-                  {senpaiNotes?.map((card, index) => (
-                    <Cards
-                      key={card.id}
-                      id={index}
-                      card={card.data}
-                      setIndex={handleIndex}
-                    />
+                  {filteredNotes(senpaiNotes)?.map((card, index) => (
+                    <Cards key={index} card={card} setCardShow={handleIndex} />
                   ))}
                   {senpaiNotes.length === 0 && (
                     <h2 className="mt-10 w-full text-center font-semibold">
@@ -236,13 +240,12 @@ const Main = ({ logOut, user }) => {
             {list[0] &&
               (!loading[0] ? (
                 <>
-                  {cards?.map((card, index) => (
+                  {filteredNotes(cards)?.map((card, index) => (
                     <Cards
+                      key={index}
                       user={user.uid}
-                      key={card.id}
-                      id={index}
-                      card={card.data}
-                      setIndex={handleIndex}
+                      card={card}
+                      setCardShow={handleIndex}
                     />
                   ))}
                   {cards.length === 0 && (
@@ -259,7 +262,7 @@ const Main = ({ logOut, user }) => {
       </div>
 
       <button
-        hidden={addCard || index !== -1}
+        hidden={addCard || cardShow !== undefined}
         onClick={() => setAddCard(true)}
         className="absolute bottom-5 right-8"
       >
