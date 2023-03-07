@@ -1,30 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
+import { compressImage } from "../compressImage";
 
 const Form = (props) => {
   const refInput = useRef();
-  const [imageRead, setImageRead] = useState(false);
   const [addLink, setAddLink] = useState(false);
+  const [preview, setPreview] = useState("");
 
   useEffect(() => {
     let fileReader;
-    let isCancel = false;
     if (props.attachment) {
       fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        const { result } = e.target;
-        if (result && !isCancel) {
-          props.setFormData((prevFormData) => ({
-            ...prevFormData,
-            attachment: result,
-          }));
-          setImageRead(true);
-        }
-      };
       fileReader.readAsDataURL(props.attachment);
+      fileReader.onloadend = async () => {
+        setPreview(fileReader.result);
+        await compressImage(fileReader.result)
+          .then((compressed) => {
+            if (compressed) {
+              props.setFormData((prevFormData) => ({
+                ...prevFormData,
+                attachment: compressed,
+              }));
+            }
+          })
+          .catch((err) => alert(err.message));
+      };
     }
-
     return () => {
-      isCancel = true;
       if (fileReader && fileReader.readyState === FileReader.LOADING) {
         fileReader.abort();
       }
@@ -33,12 +34,14 @@ const Form = (props) => {
 
   useEffect(() => {
     setAddLink(false);
-    setImageRead(false);
+    props.setAttachment("");
+    setPreview("");
   }, [props.backCall]);
 
   const removeAttachment = () => {
+    props.setAttachment("");
+    setPreview("");
     props.setFormData({ ...props.formData, attachment: "" });
-    setImageRead(false);
   };
 
   const removeLink = () => {
@@ -52,7 +55,7 @@ const Form = (props) => {
   return (
     <>
       <form onSubmit={(e) => props.handleSubmit(e)}>
-        <div className="relative mt-4" data-te-input-wrapper-init>
+        <div className="relative mt-4">
           <span
             className={`absolute text-sm top-2 left-2 text-purple-700 transition-all duration-150 ${
               props.titleActive
@@ -179,7 +182,7 @@ const Form = (props) => {
           accept="image"
           onChange={(e) => props.setAttachment(e.target.files[0])}
         />
-        {!imageRead && !props.formData?.attachment ? (
+        {!preview && !props.formData?.attachment ? (
           <div className="mt-2 w-full flex text-white">
             <button
               type="button"
@@ -213,7 +216,7 @@ const Form = (props) => {
           <div className="flex items-center justify-center flex-col gap-3">
             <img
               onClick={removeAttachment}
-              src={props.formData.attachment}
+              src={preview || props.formData?.attachment}
               alt="pic"
               className="h-40 cursor-pointer"
             />

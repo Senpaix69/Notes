@@ -21,6 +21,7 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
       link: formData.link || "",
       text: formData.text,
       imp: formData.imp || false,
+      users: [],
       attachment: formData.attachment || "",
       date: formData.date
         ? formData.date + ", " + date.toLocaleTimeString()

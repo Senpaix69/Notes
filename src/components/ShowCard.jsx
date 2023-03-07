@@ -113,7 +113,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
 
               {dropDown && (
                 <div
-                  className="absolute right-0 z-10 mt-1 w-56 origin-top-right rounded-md backdrop-blur-sm shadow-lg ring-2 ring-purple-900 ring-opacity-5 focus:outline-none"
+                  className="absolute right-0 bg-purple-200 font-semibold z-10 mt-1 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-purple-900 ring-opacity-40 focus:outline-none"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="menu-button"
@@ -125,7 +125,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         setDropDown(false);
                         editNote ? setEditNote(false) : setEditNote(true);
                       }}
-                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-300 w-full text-left"
+                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600 hover:text-white w-full text-left"
                       tabIndex="-1"
                       id="menu-item-0"
                     >
@@ -136,7 +136,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         setDropDown(false);
                         deleteNote(id);
                       }}
-                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-300 w-full text-left"
+                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600 hover:text-white w-full text-left"
                       tabIndex="-1"
                       id="menu-item-0"
                     >
@@ -147,7 +147,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         setDropDown(false);
                         updateNote(id, { ...formData, imp: !formData.imp });
                       }}
-                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-300 w-full text-left"
+                      className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600 hover:text-white w-full text-left"
                       tabIndex="-1"
                       id="menu-item-0"
                     >
@@ -194,8 +194,10 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         <a
                           className="hover:text-blue-800 underline underline-offset-2"
                           href={card.link}
-                          rel="noreferrer"
-                          target="_blank"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.open(card.link, "_system");
+                          }}
                         >
                           {card.label}
                         </a>
