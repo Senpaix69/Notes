@@ -194,10 +194,8 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         <a
                           className="hover:text-blue-800 underline underline-offset-2"
                           href={card.link}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.open(card.link, "_system");
-                          }}
+                          target="_self"
+                          rel="noreferrer"
                         >
                           {card.label}
                         </a>
