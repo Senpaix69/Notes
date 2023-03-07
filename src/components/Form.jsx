@@ -4,6 +4,7 @@ import { compressImage } from "../compressImage";
 const Form = (props) => {
   const refInput = useRef();
   const [addLink, setAddLink] = useState(false);
+  const [shareWith, setShareWith] = useState("");
   const [preview, setPreview] = useState("");
 
   useEffect(() => {
@@ -104,19 +105,45 @@ const Form = (props) => {
           />
         </div>
         <div className="mx-2 border-2 border-purple-500"></div>
-        <div className="relative mt-8">
-          <span className="absolute text-xs top-2 left-2 text-purple-700 -translate-y-6 scale-90">
-            {"Date (optional)"}
-          </span>
-          <input
-            name="date"
-            value={props.formData.date || ""}
-            onChange={(e) => handleChange(e)}
-            type="date"
-            className="block min-h-[auto] w-full text-sm max-w-[150px] rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
-          />
+        <div className="relative mt-8 flex items-center justify-between gap-6">
+          <div className="relative">
+            <span className="absolute text-xs top-2 left-2 text-purple-700 -translate-y-6 scale-90">
+              {"Date (optional)"}
+            </span>
+            <input
+              name="date"
+              value={props.formData.date || ""}
+              onChange={(e) => handleChange(e)}
+              type="date"
+              className="block min-h-[auto] w-full text-sm max-w-[150px] rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+            />
+            <div className="mx-2 mb-4 border-2 w-full max-w-[150px] border-purple-500"></div>
+          </div>
+          <div className="relative">
+            <span className="absolute w-full text-xs top-2 left-0 text-purple-700 -translate-y-6 scale-90">
+              {"Share Note (optional)"}
+            </span>
+            <div className="flex items-center justify-between">
+              <input
+                name="shareWith"
+                value={shareWith}
+                onChange={(e) => setShareWith(e.target.value)}
+                type="text"
+                placeholder="username"
+                className="block min-h-[auto] placeholder:text-black w-full text-sm rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+              />
+              <button
+                disabled={shareWith === ""}
+                type="button"
+                className="mx-2 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-4 py-2 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+              >
+                ADD
+              </button>
+            </div>
+
+            <div className="mx-2 mb-4 border-2 w-full max-w-[150px] border-purple-500"></div>
+          </div>
         </div>
-        <div className="mx-2 mb-4 border-2 max-w-[150px] border-purple-500"></div>
         <div className="flex gap-3 items-center justify-start m-2 mb-4 text-sm text-purple-900 font-semibold">
           <input
             type="checkbox"
@@ -188,7 +215,7 @@ const Form = (props) => {
               type="button"
               disabled={props.loading}
               onClick={() => refInput.current.click()}
-              className="bg-purple-500 p-2 px-4 shadow-md rounded-lg gap-3 m-auto flex items-center justify-center hover:bg-purple-800"
+              className="bg-purple-500 disabled:bg-purple-300 p-2 px-4 shadow-md rounded-lg gap-3 m-auto flex items-center justify-center hover:bg-purple-800"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +255,7 @@ const Form = (props) => {
         <button
           disabled={props.loading}
           type="submit"
-          className="ml-2 mt-5 bg-purple-500 text-white rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+          className="ml-2 mt-5 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
         >
           {props.loading ? "Saving..." : "Save"}
         </button>
