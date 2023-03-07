@@ -81,7 +81,9 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
 
           <div
             className={`absolute right-5 top-10 z-20 ${
-              card?.uid === user ? "" : "hidden"
+              card?.uid === user || card?.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72"
+                ? ""
+                : "hidden"
             }`}
           >
             <div className="relative inline-block text-left">
