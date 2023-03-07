@@ -230,7 +230,10 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                       </svg>
                     )}
                     <p className="mt-8 font-semibol text-xs flex items-center gap-4">
-                      <span>from: {card.name}</span>
+                      {(card.uid === user ||
+                        card?.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72") && (
+                        <span>from: {card.name}</span>
+                      )}
                       <span>date: {card.date}</span>
                     </p>
                   </div>
