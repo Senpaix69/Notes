@@ -194,32 +194,30 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         <a
                           className="hover:text-blue-800 underline underline-offset-2"
                           href={card.link}
-                          target="_self"
+                          target="_parent"
                           rel="noreferrer"
                         >
                           {card.label}
                         </a>
                       </div>
                     )}
-                    {(card.uid === user ||
-                      card?.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72") &&
-                      card?.users?.length !== 0 && (
-                        <div className="flex items-start justify-start flex-col mt-8">
-                          <h1 className="font-semibold text-sm my-1">
-                            Shared with:
-                          </h1>
-                          {card.users?.map((User, ind) => (
-                            <div
-                              key={ind}
-                              className="ml-10 mt-1 w-full max-w-[140px] gap-2"
-                            >
-                              <h6 className="text-xs lowercase">
-                                {ind + 1}: {User}
-                              </h6>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                    {card.uid === user && card?.users?.length !== 0 && (
+                      <div className="flex items-start justify-start flex-col mt-8">
+                        <h1 className="font-semibold text-sm my-1">
+                          Shared with:
+                        </h1>
+                        {card.users?.map((User, ind) => (
+                          <div
+                            key={ind}
+                            className="ml-10 mt-1 w-full max-w-[140px] gap-2"
+                          >
+                            <h6 className="text-xs lowercase">
+                              {ind + 1}: {User}
+                            </h6>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     {card?.imp && (
                       <svg
                         className="absolute right-6 bottom-6 h-4 fill-purple-800"
@@ -230,8 +228,8 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                       </svg>
                     )}
                     <p className="mt-8 font-semibol text-xs flex items-center gap-4">
-                      {(card.uid === user ||
-                        card?.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72") && (
+                      {(card.uid !== user ||
+                        card?.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72") && (
                         <span>from: {card.name}</span>
                       )}
                       <span>date: {card.date}</span>

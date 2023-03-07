@@ -116,9 +116,9 @@ const Form = (props) => {
         </div>
         <div className="border-2 border-purple-500"></div>
 
-        {props.formData?.users?.length !== 0 && (
+        {props.formData?.users && props.formData?.users?.length !== 0 && (
           <div className="flex items-start justify-center flex-col mt-1">
-            <h1 className="font-semibold text-sm m-2">Sharing with: </h1>
+            <h1 className="font-semibold text-sm my-2">Sharing with: </h1>
             {props.formData.users?.map((user, ind) => (
               <div
                 key={ind}

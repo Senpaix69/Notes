@@ -25,13 +25,13 @@ const SideMenu = ({ user, logOut }) => {
             type="button"
             className="hover:bg-purple-600 hover:text-white w-full text-left p-2 rounded-md"
           >
-            Send Note
+            Special Note
           </button>
           <button
             type="button"
             className="hover:bg-purple-600 hover:text-white w-full text-left p-2 rounded-md"
           >
-            Delete Notes
+            Deleted Notes
           </button>
           <button
             onClick={logOut}

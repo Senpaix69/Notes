@@ -24,11 +24,11 @@ const Main = ({ logOut, user }) => {
   const [cardShow, setCardShow] = useState(undefined);
   const [menu, setMenu] = useState(false);
   const [addCard, setAddCard] = useState(false);
-  const [list, setList] = useState([true, false]);
+  const [list, setList] = useState([true, false, false, false, false]);
   const [loading, setLoading] = useState(false);
   const [cards, setCards] = useState([]);
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState(0);
   const collRef = collection(db, "notes");
 
   useEffect(() => setSearch(""), [list]);
@@ -73,7 +73,7 @@ const Main = ({ logOut, user }) => {
   };
 
   const switchList = (ind) => {
-    setSortBy(ind === 0 ? "" : "senpai");
+    setSortBy(ind);
     setList(list.map((_, i) => (i === ind ? true : false)));
   };
 
@@ -88,16 +88,33 @@ const Main = ({ logOut, user }) => {
         card.data.label.toLowerCase().includes(search.toLowerCase())
     );
   };
+
   const filteredNotesByName = (notes) => {
-    return sortBy
-      ? notes.filter(
-          (card) =>
-            card.data.name.toLowerCase().includes(sortBy) &&
-            card.data.users?.includes(user.name)
-        )
-      : user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72"
-      ? notes.filter((card) => card.data.uid === user.uid)
-      : notes;
+    const isSenpai = user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72";
+    const lowerCaseName = user.name.toLowerCase();
+
+    return notes.filter((card) => {
+      if (sortBy === 1) {
+        return card.data.users?.some((u) =>
+          u.toLowerCase().includes(lowerCaseName)
+        );
+      } else if (sortBy === 0) {
+        return card.data.uid === user.uid || !isSenpai;
+      } else if (sortBy === 2) {
+        return (
+          card.data.attachment && (card.data.uid === user.uid || !isSenpai)
+        );
+      } else if (sortBy === 3) {
+        return card.data.link && (card.data.uid === user.uid || !isSenpai);
+      } else if (sortBy === 4) {
+        return (
+          card.data.users?.length !== 0 &&
+          (card.data.uid === user.uid || !isSenpai)
+        );
+      } else {
+        return false;
+      }
+    });
   };
 
   return (
@@ -129,12 +146,12 @@ const Main = ({ logOut, user }) => {
         <div hidden={addCard || cardShow !== undefined}>
           <div
             onClick={() => setMenu(false)}
-            className={`absolute top-0 backdrop-blur-sm w-full h-full transition-all ease-in-out duration-500 ${
+            className={`absolute top-0 backdrop-blur-sm w-full h-full transition-all ease-in-out duration-300 ${
               menu ? "z-40 opacity-100" : "opacity-0 -z-10"
             }`}
           ></div>
           <div
-            className={`absolute top-0 w-full backdrop-blur-md max-w-[70%] z-50 transition-all ease-in-out duration-700 ${
+            className={`absolute top-0 w-full backdrop-blur-md max-w-[70%] z-50 transition-all ease-in-out duration-300 ${
               menu
                 ? "translate-x-0 opacity-100"
                 : "w-0 h-0 -translate-x-full opacity-0"
@@ -152,29 +169,54 @@ const Main = ({ logOut, user }) => {
           </section>
 
           <section className="mt-32 mb-4">
-            {user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72" && (
-              <ul className="m-4 flex items-center justify-start gap-2">
-                <button
-                  disabled={list[0]}
-                  type="button"
-                  className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
-                    list[0] ? "bg-purple-800" : ""
-                  }`}
-                  onClick={() => switchList(0)}
-                >
-                  Your Notes
-                </button>
-                <button
-                  type="button"
-                  className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
-                    list[1] ? "bg-purple-800" : ""
-                  }`}
-                  onClick={() => switchList(1)}
-                >
-                  Senpai Notes
-                </button>
-              </ul>
-            )}
+            <ul className="m-4 flex items-center justify-start gap-2">
+              <button
+                disabled={list[0]}
+                type="button"
+                className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
+                  list[0] ? "bg-purple-800" : ""
+                }`}
+                onClick={() => switchList(0)}
+              >
+                Notes
+              </button>
+              <button
+                type="button"
+                className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
+                  list[1] ? "bg-purple-800" : ""
+                }`}
+                onClick={() => switchList(1)}
+              >
+                Recieved
+              </button>
+              <button
+                type="button"
+                className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
+                  list[2] ? "bg-purple-800" : ""
+                }`}
+                onClick={() => switchList(2)}
+              >
+                Attachments
+              </button>
+              <button
+                type="button"
+                className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
+                  list[3] ? "bg-purple-800" : ""
+                }`}
+                onClick={() => switchList(3)}
+              >
+                Links
+              </button>
+              <button
+                type="button"
+                className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
+                  list[4] ? "bg-purple-800" : ""
+                }`}
+                onClick={() => switchList(4)}
+              >
+                Shared
+              </button>
+            </ul>
             <span className="w-full ml-2 p-2 font-light font-serif bg-inherit text-xs">
               Note: The notes are sorted by importance and date
             </span>
