@@ -81,7 +81,8 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
 
           <div
             className={`absolute right-5 top-10 z-20 ${
-              card?.uid === user || card?.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72"
+              card?.uid === user ||
+              user === "6MiSvUG1upfAn5OVUyybiSaUnU72"
                 ? ""
                 : "hidden"
             }`}
@@ -201,23 +202,25 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         </a>
                       </div>
                     )}
-                    {card.uid === user && card?.users?.length !== 0 && (
-                      <div className="flex items-start justify-start flex-col mt-8">
-                        <h1 className="font-semibold text-sm my-1">
-                          Shared with:
-                        </h1>
-                        {card.users?.map((User, ind) => (
-                          <div
-                            key={ind}
-                            className="ml-10 mt-1 w-full max-w-[140px] gap-2"
-                          >
-                            <h6 className="text-xs lowercase">
-                              {ind + 1}: {User}
-                            </h6>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {card?.users?.length !== 0 &&
+                      (card.uid === user ||
+                        user === "6MiSvUG1upfAn5OVUyybiSaUnU72") && (
+                        <div className="flex items-start justify-start flex-col mt-8">
+                          <h1 className="font-semibold text-sm my-1">
+                            Shared with:
+                          </h1>
+                          {card.users?.map((User, ind) => (
+                            <div
+                              key={ind}
+                              className="ml-10 mt-1 w-full max-w-[140px] gap-2"
+                            >
+                              <h6 className="text-xs lowercase">
+                                {ind + 1}: {User}
+                              </h6>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     {card?.imp && (
                       <svg
                         className="absolute right-6 bottom-6 h-4 fill-purple-800"
