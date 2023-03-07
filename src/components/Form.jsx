@@ -53,8 +53,18 @@ const Form = (props) => {
   const handleChange = (e) => {
     props.setFormData({ ...props.formData, [e.target.name]: e.target.value });
   };
+
+  const handleShareWith = (ind) => {
+    const newUsers =
+      ind !== undefined
+        ? (props.formData?.users || []).filter((_, i) => i !== ind)
+        : [...(props.formData?.users || []), shareWith];
+    props.setFormData((formData) => ({ ...formData, users: newUsers }));
+    setShareWith("");
+  };
+
   return (
-    <>
+    <div className="mx-2">
       <form onSubmit={(e) => props.handleSubmit(e)}>
         <div className="relative mt-4">
           <span
@@ -79,7 +89,7 @@ const Form = (props) => {
             required
           />
         </div>
-        <div className="mx-2 border-2 border-purple-500"></div>
+        <div className="border-2 border-purple-500"></div>
         <div className="relative mt-8">
           <span
             className={`absolute text-sm top-2 left-2 text-purple-700 transition-all duration-150 ${
@@ -104,10 +114,32 @@ const Form = (props) => {
             required
           />
         </div>
-        <div className="mx-2 border-2 border-purple-500"></div>
+        <div className="border-2 border-purple-500"></div>
+
+        {props.formData?.users?.length !== 0 && (
+          <div className="flex items-start justify-center flex-col mt-1">
+            <h1 className="font-semibold text-sm m-2">Sharing with: </h1>
+            {props.formData.users?.map((user, ind) => (
+              <div
+                key={ind}
+                className="ml-4 mt-1 text-sm flex items-center justify-between gap-2"
+              >
+                <button
+                  type="button"
+                  onClick={() => handleShareWith(ind)}
+                  className="bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+                >
+                  Remove
+                </button>
+                <h1 className="font-semibold">{user}</h1>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="relative mt-8 flex items-center justify-between gap-6">
           <div className="relative">
-            <span className="absolute text-xs top-2 left-2 text-purple-700 -translate-y-6 scale-90">
+            <span className="absolute text-xs top-2 -left-1 text-purple-700 -translate-y-6 scale-90">
               {"Date (optional)"}
             </span>
             <input
@@ -115,37 +147,39 @@ const Form = (props) => {
               value={props.formData.date || ""}
               onChange={(e) => handleChange(e)}
               type="date"
-              className="block min-h-[auto] w-full text-sm max-w-[150px] rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+              className="block min-h-[auto] text-sm max-w-[120px] rounded border-0 bg-transparent py-[0.32rem] outline-none"
             />
-            <div className="mx-2 mb-4 border-2 w-full max-w-[150px] border-purple-500"></div>
+            <div className="mb-4 border-2 max-w-[120px] border-purple-500"></div>
           </div>
           <div className="relative">
-            <span className="absolute w-full text-xs top-2 left-0 text-purple-700 -translate-y-6 scale-90">
+            <span className="absolute text-xs top-2 -left-1 text-purple-700 -translate-y-6 scale-90">
               {"Share Note (optional)"}
             </span>
-            <div className="flex items-center justify-between">
+            <div className="relative flex items-center justify-start">
               <input
                 name="shareWith"
                 value={shareWith}
                 onChange={(e) => setShareWith(e.target.value)}
                 type="text"
                 placeholder="username"
-                className="block min-h-[auto] placeholder:text-black w-full text-sm rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+                className="block min-h-[auto] placeholder:text-black text-sm rounded border-0 bg-transparent py-[0.32rem] px-1 outline-none"
               />
               <button
+                onClick={() => handleShareWith()}
                 disabled={shareWith === ""}
                 type="button"
-                className="mx-2 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-4 py-2 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+                className="absolute right-2 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
               >
                 ADD
               </button>
             </div>
 
-            <div className="mx-2 mb-4 border-2 w-full max-w-[150px] border-purple-500"></div>
+            <div className="mb-4 border-2 w-full border-purple-500"></div>
           </div>
         </div>
         <div className="flex gap-3 items-center justify-start m-2 mb-4 text-sm text-purple-900 font-semibold">
           <input
+            disabled={props.loading}
             type="checkbox"
             className="mt-[3px] scale-125"
             checked={props.formData.imp || false}
@@ -178,7 +212,7 @@ const Form = (props) => {
                 required
               />
             </div>
-            <div className="mx-2 border-2 border-purple-500"></div>
+            <div className="border-2 border-purple-500"></div>
             <div className="relative mt-8">
               <span className="absolute text-sm top-2 left-2 text-purple-700 -translate-y-6 scale-90">
                 Link
@@ -192,7 +226,7 @@ const Form = (props) => {
                 required
               />
             </div>
-            <div className="mx-2 border-2 border-purple-500"></div>
+            <div className="border-2 border-purple-500"></div>
             <button
               onClick={removeLink}
               type="button"
@@ -215,7 +249,7 @@ const Form = (props) => {
               type="button"
               disabled={props.loading}
               onClick={() => refInput.current.click()}
-              className="bg-purple-500 disabled:bg-purple-300 p-2 px-4 shadow-md rounded-lg gap-3 m-auto flex items-center justify-center hover:bg-purple-800"
+              className="bg-purple-500 disabled:cursor-not-allowed disabled:bg-purple-300 p-2 px-4 shadow-md rounded-lg gap-3 m-auto flex items-center justify-center hover:bg-purple-800"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -255,12 +289,12 @@ const Form = (props) => {
         <button
           disabled={props.loading}
           type="submit"
-          className="ml-2 mt-5 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+          className="ml-2 mt-5 bg-purple-500 disabled:cursor-not-allowed disabled:bg-purple-300 text-white rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
         >
           {props.loading ? "Saving..." : "Save"}
         </button>
       </form>
-    </>
+    </div>
   );
 };
 

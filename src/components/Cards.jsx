@@ -23,6 +23,7 @@ const Cards = ({ card, setCardShow, user }) => {
             <h6>{data?.date}</h6>
             <div className="flex items-center justify-center gap-2">
               <span>{data.attachment ? "Attachment" : ""}</span>
+              <span>{data.users?.length !== 0 ? "Shared" : ""}</span>
               <span>
                 {data.link ? (
                   <svg
