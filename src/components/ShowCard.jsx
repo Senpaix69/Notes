@@ -83,11 +83,11 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
           <img
             src={butterFly}
             alt="butterfly"
-            className="h-16 bg-purple-800 rounded-full z-50"
+            className="h-16 bg-purple-800 rounded-full z-20"
           />
         </div>
         <div
-          className={`absolute right-5 top-4 z-20 ${
+          className={`absolute right-5 top-4 z-10 ${
             card?.uid === user || user === "6MiSvUG1upfAn5OVUyybiSaUnU72"
               ? ""
               : "hidden"
@@ -175,7 +175,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                     {card.title}
                   </h1>
                   <div className="border-2 border-purple-500 w-full"></div>
-                  <div className="mt-6">
+                  <div className="mt-6 w-full">
                     <p
                       style={{
                         whiteSpace: "pre-wrap",
@@ -190,7 +190,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                         <img
                           src={card.attachment}
                           alt="pic"
-                          className="rounded-lg shadow-lg"
+                          className="rounded-lg shadow-lg m-auto"
                         />
                       </div>
                     )}
