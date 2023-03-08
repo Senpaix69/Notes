@@ -77,6 +77,7 @@ const Form = (props) => {
             Title
           </span>
           <input
+            disabled={props.loading}
             onFocus={() => props.setTitleActive(true)}
             onBlur={() => {
               !props.formData?.title && props.setTitleActive(false);
@@ -85,7 +86,7 @@ const Form = (props) => {
             value={props.formData.title || ""}
             onChange={(e) => handleChange(e)}
             type="text"
-            className="block min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+            className="block min-h-[auto] disabled:cursor-wait w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
             required
           />
         </div>
@@ -101,6 +102,7 @@ const Form = (props) => {
             Text
           </span>
           <textarea
+            disabled={props.loading}
             onFocus={() => props.setTextActive(true)}
             onBlur={() => {
               !props.formData?.text && props.setTextActive(false);
@@ -110,7 +112,7 @@ const Form = (props) => {
             onChange={(e) => handleChange(e)}
             rows={4}
             type="text"
-            className="bg-slate-100 scrollbar-hide bg-opacity-30 resize-none min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+            className="bg-slate-100 disabled:cursor-wait scrollbar-hide bg-opacity-30 resize-none min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
             required
           />
         </div>
@@ -125,9 +127,10 @@ const Form = (props) => {
                 className="ml-4 mt-1 text-sm flex items-center justify-between gap-2"
               >
                 <button
+                  disabled={props.loading}
                   type="button"
                   onClick={() => handleShareWith(ind)}
-                  className="bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+                  className="bg-purple-500 disabled:bg-purple-300 disabled:cursor-wait text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
                 >
                   Remove
                 </button>
@@ -143,11 +146,12 @@ const Form = (props) => {
               {"Date (optional)"}
             </span>
             <input
+              disabled={props.loading}
               name="date"
               value={props.formData.date || ""}
               onChange={(e) => handleChange(e)}
               type="date"
-              className="block min-h-[auto] text-sm max-w-[120px] rounded border-0 bg-transparent py-[0.32rem] outline-none"
+              className="block min-h-[auto] disabled:cursor-wait text-sm max-w-[120px] rounded border-0 bg-transparent py-[0.32rem] outline-none"
             />
             <div className="mb-4 border-2 max-w-[120px] border-purple-500"></div>
           </div>
@@ -157,12 +161,13 @@ const Form = (props) => {
             </span>
             <div className="relative max-w-[140px] md:max-w-full">
               <input
+                disabled={props.loading}
                 name="shareWith"
                 value={shareWith}
                 onChange={(e) => setShareWith(e.target.value)}
                 type="text"
                 placeholder="username"
-                className="block min-h-[auto] placeholder:text-black text-sm rounded border-0 bg-transparent py-[0.32rem] px-1 outline-none"
+                className="block min-h-[auto] disabled:cursor-wait placeholder:text-black text-sm rounded border-0 bg-transparent py-[0.32rem] px-1 outline-none"
               />
               <button
                 onClick={() => handleShareWith()}
@@ -190,6 +195,7 @@ const Form = (props) => {
           />
           <h2 className="text-black">Important Note?</h2>
           <button
+            disabled={props.loading}
             hidden={addLink}
             onClick={() => setAddLink(true)}
             type="button"
@@ -204,11 +210,12 @@ const Form = (props) => {
                 Label
               </span>
               <input
+                disabled={props.loading}
                 name="label"
                 value={props.formData.label || ""}
                 onChange={(e) => handleChange(e)}
                 type="text"
-                className="block min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+                className="block min-h-[auto] disabled:cursor-wait w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
                 required
               />
             </div>
@@ -218,19 +225,21 @@ const Form = (props) => {
                 Link
               </span>
               <input
+                disabled={props.loading}
                 name="link"
                 value={props.formData.link || ""}
                 onChange={(e) => handleChange(e)}
                 type="text"
-                className="block min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
+                className="block min-h-[auto] disabled:cursor-wait w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
                 required
               />
             </div>
             <div className="border-2 border-purple-500"></div>
             <button
+              disabled={props.loading}
               onClick={removeLink}
               type="button"
-              className="ml-2 mt-5 bg-purple-500 text-white rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+              className="ml-2 mt-5 disabled:cursor-not-allowed disabled:bg-purple-300 bg-purple-500 text-white rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
             >
               Remove
             </button>
@@ -276,6 +285,7 @@ const Form = (props) => {
         ) : (
           <div className="flex items-center justify-center flex-col gap-3">
             <img
+              disabled={props.loading}
               onClick={removeAttachment}
               src={preview || props.formData?.attachment}
               alt="pic"

@@ -217,9 +217,6 @@ const Main = ({ logOut, user }) => {
                 Shared
               </button>
             </ul>
-            <span className="w-full ml-2 p-2 font-light font-serif bg-inherit text-xs">
-              Note: The notes are sorted by importance and date
-            </span>
             {!loading ? (
               <>
                 {filteredNotesBySearch(filteredNotesByName(cards))?.map(

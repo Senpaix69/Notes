@@ -19,7 +19,7 @@ const Cards = ({ card, setCardShow, user }) => {
           <p className="text-sm font-semibold truncate max-w-[300px] text-slate-800">
             {data.text}
           </p>
-          <div className="text-xs mt-1 text-slate-800 flex items-center justify-between w-full">
+          <div className="text-[10px] mt-1 text-slate-800 flex items-center justify-between w-full">
             <h6>{data?.date}</h6>
             <div className="flex items-center justify-center gap-2">
               <span>{data.attachment ? "Attachment" : ""}</span>
@@ -27,7 +27,7 @@ const Cards = ({ card, setCardShow, user }) => {
               <span>
                 {data.link ? (
                   <svg
-                    className="h-3"
+                    className="h-2"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 640 512"
                   >

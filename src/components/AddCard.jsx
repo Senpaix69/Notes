@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { formatDate } from "../formatDate";
 import butterFly from "../images/butterfly.png";
 import Form from "./Form";
 
@@ -23,9 +24,10 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
       imp: formData.imp || false,
       users: formData.users || [],
       attachment: formData.attachment || "",
-      date: formData.date
-        ? formData.date + ", " + date.toLocaleTimeString()
-        : date.toLocaleString(),
+      date:
+        formatDate(formData.date ? formData.date : undefined) +
+        ", " +
+        date.toLocaleTimeString(),
     })
       .then(() => {
         setFormData({});
@@ -44,24 +46,30 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
   return (
     <div>
       <div className="fixed w-full max-w-[600px] top-0 bg-purple-400 p-3 py-4 flex items-center font-bold gap-3 z-50">
-        <svg
+        <button
+          type="button"
           onClick={() => {
             setAddCard(false);
             setBackCall((prev) => !prev);
           }}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-8 h-8 ml-3 cursor-pointer"
+          disabled={loading}
+          className="disabled:cursor-wait"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-          />
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-8 h-8 ml-3"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
+            />
+          </svg>
+        </button>
         <h1 className="text-lg">Add Note</h1>
       </div>
 
