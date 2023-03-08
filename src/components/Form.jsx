@@ -137,7 +137,7 @@ const Form = (props) => {
           </div>
         )}
 
-        <div className="relative mt-8 flex items-center justify-between gap-6">
+        <div className="mt-8 flex items-center justify-between gap-6">
           <div className="relative">
             <span className="absolute text-xs top-2 -left-1 text-purple-700 -translate-y-6 scale-90">
               {"Date (optional)"}
@@ -155,7 +155,7 @@ const Form = (props) => {
             <span className="absolute text-xs top-2 -left-1 text-purple-700 -translate-y-6 scale-90">
               {"Share Note (optional)"}
             </span>
-            <div className="relative flex items-center justify-start">
+            <div className="relative max-w-[140px] md:max-w-full">
               <input
                 name="shareWith"
                 value={shareWith}
@@ -168,13 +168,13 @@ const Form = (props) => {
                 onClick={() => handleShareWith()}
                 disabled={shareWith === ""}
                 type="button"
-                className="absolute right-2 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+                className="absolute top-[2.5px] right-0 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
               >
                 ADD
               </button>
             </div>
 
-            <div className="mb-4 border-2 w-full border-purple-500"></div>
+            <div className="mb-4 border-2 border-purple-500"></div>
           </div>
         </div>
         <div className="flex gap-3 items-center justify-start m-2 mb-4 text-sm text-purple-900 font-semibold">

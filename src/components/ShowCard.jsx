@@ -60,7 +60,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-8 h-8 ml-3 cursor-pointer"
+          className="w-8 h-8 cursor-pointer"
         >
           <path
             strokeLinecap="round"
