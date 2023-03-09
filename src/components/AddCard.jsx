@@ -14,7 +14,8 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let attachment = "";
-    if (formData.attachment) attachment = await uploadFile(formData.attachment);
+    if (formData.attachment)
+      attachment = await uploadFile(formData.attachment, user.name);
     setLoading(true);
     addDoc(collRef, {
       uid: user.uid,
