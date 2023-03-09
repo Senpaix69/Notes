@@ -9,7 +9,7 @@ import {
   orderBy,
   deleteDoc,
   doc,
-  runTransaction,
+  setDoc,
 } from "firebase/firestore";
 import Header from "./Header";
 import Cards from "./Cards";
@@ -19,7 +19,7 @@ import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
 import Loading from "./Loading";
 import SideMenu from "./SideMenu";
-import { formatDate } from "../formatDate";
+import { formatDate } from "../utils";
 
 const Main = ({ logOut, user }) => {
   const date = new Date();
@@ -38,15 +38,8 @@ const Main = ({ logOut, user }) => {
       db,
       `users/${(user.name + "-" + user.uid).toLowerCase()}`
     );
-    runTransaction(db, async (transaction) => {
-      return transaction.get(userRef).then((doc) => {
-        if (doc.exists()) {
-          transaction.update(userRef, { online: formatDate(undefined) });
-        } else {
-          transaction.set(userRef, { user, online: formatDate(undefined) });
-        }
-      });
-    }).catch((err) => alert(err.message));
+    const data = { user, online: formatDate(undefined) };
+    setDoc(userRef, data, { merge: true }).catch((err) => alert(err.message));
   }, [user]);
 
   useEffect(() => setSearch(""), [list]);

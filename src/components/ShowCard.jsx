@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { formatDate } from "../formatDate";
+import { formatDate, uploadFile } from "../utils";
 import butterFly from "../images/butterfly.png";
 import Form from "./Form";
 
@@ -9,6 +9,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
   const [loading, setLoading] = useState(false);
   const [titleActive, setTitleActive] = useState(false);
   const [textActive, setTextActive] = useState(false);
+  const [loadImg, setLoadImg] = useState(true);
   const [backCall, setBackCall] = useState(false);
   const [formData, setFormData] = useState({});
   const [attachment, setAttachment] = useState("");
@@ -30,13 +31,16 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
     setTextActive(true);
   }, [card]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let attachment = formData.attachment;
+    if (attachment) attachment = await uploadFile(formData.attachment);
     setLoading(true);
     updateNote(
       id,
       {
         ...formData,
+        attachment,
         date: formData?.date.includes("M")
           ? formData?.date
           : formatDate(formData?.date),
@@ -56,6 +60,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
             setBackCall((prev) => !prev);
             setDropDown(false);
             setEditNote(false);
+            setLoadImg(true);
           }}
           disabled={loading}
           className="disabled:cursor-wait"
@@ -186,8 +191,12 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                       {card.text}
                     </p>
                     {card.attachment && (
-                      <div className="rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4">
+                      <div
+                        hidden={loadImg}
+                        className="rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4"
+                      >
                         <img
+                          onLoad={() => setLoadImg(false)}
                           src={card.attachment}
                           alt="pic"
                           className="rounded-lg shadow-lg m-auto"

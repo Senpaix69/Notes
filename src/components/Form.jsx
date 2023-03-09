@@ -9,21 +9,26 @@ const Form = (props) => {
 
   useEffect(() => {
     let fileReader;
+    const compressAndSetAttachment = async (attachment) => {
+      try {
+        const compressed = await compressImage(attachment);
+        if (compressed) {
+          props.setFormData((prevFormData) => ({
+            ...prevFormData,
+            attachment: compressed,
+          }));
+        }
+      } catch (err) {
+        console.log(err.message);
+        alert(err.message);
+      }
+    };
     if (props.attachment) {
       fileReader = new FileReader();
       fileReader.readAsDataURL(props.attachment);
-      fileReader.onloadend = async () => {
+      fileReader.onloadend = () => {
         setPreview(fileReader.result);
-        await compressImage(fileReader.result)
-          .then((compressed) => {
-            if (compressed) {
-              props.setFormData((prevFormData) => ({
-                ...prevFormData,
-                attachment: compressed,
-              }));
-            }
-          })
-          .catch((err) => alert(err.message));
+        compressAndSetAttachment(props.attachment);
       };
     }
     return () => {
@@ -58,7 +63,10 @@ const Form = (props) => {
     const newUsers =
       ind !== undefined
         ? (props.formData?.users || []).filter((_, i) => i !== ind)
-        : [...(props.formData?.users || []), shareWith];
+        : [
+            ...(props.formData?.users || []),
+            shareWith?.split()?.join("")?.toLowerCase(),
+          ];
     props.setFormData((formData) => ({ ...formData, users: newUsers }));
     setShareWith("");
   };

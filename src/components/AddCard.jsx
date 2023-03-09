@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { formatDate } from "../formatDate";
+import { formatDate, uploadFile } from "../utils";
 import butterFly from "../images/butterfly.png";
 import Form from "./Form";
 
@@ -11,8 +11,10 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
   const [formData, setFormData] = useState({});
   const [attachment, setAttachment] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let attachment = "";
+    if (formData.attachment) attachment = await uploadFile(formData.attachment);
     setLoading(true);
     addDoc(collRef, {
       uid: user.uid,
@@ -23,7 +25,7 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
       text: formData.text,
       imp: formData.imp || false,
       users: formData.users || [],
-      attachment: formData.attachment || "",
+      attachment,
       date: formatDate(formData.date ? formData.date : undefined),
     })
       .then(() => {
