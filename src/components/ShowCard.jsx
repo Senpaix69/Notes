@@ -194,21 +194,25 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                       {card.text}
                     </p>
                     {card.attachment && (
-                      <div className="rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4">
-                        {loadImg && (
-                          <img
-                            src={loadingImg}
-                            alt="pic"
-                            className="rounded-lg shadow-lg m-auto"
-                          />
-                        )}
+                      <div className="relative rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4">
+                        <img
+                          src={loadingImg}
+                          alt="pic"
+                          className={`rounded-lg shadow-lg m-auto transition-opacity duration-150 ${
+                            loadImg
+                              ? "opacity-100"
+                              : "opacity-0 absolute left-0 p-2"
+                          }`}
+                        />
                         <img
                           placeholder={loadingImg}
                           onLoad={() => setLoadImg(false)}
                           src={card.attachment}
                           alt="pic"
                           loading="lazy"
-                          className="rounded-lg shadow-lg m-auto"
+                          className={`rounded-lg shadow-lg m-auto transition-opacity duration-300 ${
+                            loadImg ? "opacity-0" : "opacity-100"
+                          }`}
                         />
                       </div>
                     )}
