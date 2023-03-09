@@ -39,7 +39,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
         ...formData,
         date: formData?.date.includes("M")
           ? formData?.date
-          : formatDate(formData?.date) + ", " + new Date().toLocaleTimeString(),
+          : formatDate(formData?.date),
       },
       setLoading,
       setEditNote
@@ -47,7 +47,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
   };
 
   return (
-    <div>
+    <div className="h-screen overflow-hidden overflow-y-scroll">
       <div className="fixed w-full max-w-[600px] top-0 bg-purple-400 px-3 py-4 flex items-center font-bold gap-3 z-50">
         <button
           type="button"

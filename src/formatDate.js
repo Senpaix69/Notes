@@ -6,5 +6,9 @@ export const formatDate = (dateString = new Date()) => {
     day: "numeric",
   };
 
-  return new Date(dateString).toLocaleDateString("en-US", options);
+  return (
+    new Date(dateString).toLocaleDateString("en-US", options) +
+    ", " +
+    new Date().toLocaleTimeString()
+  );
 };

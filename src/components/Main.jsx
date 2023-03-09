@@ -9,6 +9,7 @@ import {
   orderBy,
   deleteDoc,
   doc,
+  runTransaction,
 } from "firebase/firestore";
 import Header from "./Header";
 import Cards from "./Cards";
@@ -18,6 +19,7 @@ import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
 import Loading from "./Loading";
 import SideMenu from "./SideMenu";
+import { formatDate } from "../formatDate";
 
 const Main = ({ logOut, user }) => {
   const date = new Date();
@@ -31,11 +33,31 @@ const Main = ({ logOut, user }) => {
   const [sortBy, setSortBy] = useState(0);
   const collRef = collection(db, "notes");
 
+  useEffect(() => {
+    const userRef = doc(
+      db,
+      `users/${(user.name + "-" + user.uid).toLowerCase()}`
+    );
+    runTransaction(db, async (transaction) => {
+      return transaction.get(userRef).then((doc) => {
+        if (doc.exists()) {
+          transaction.update(userRef, { online: formatDate(undefined) });
+        } else {
+          transaction.set(userRef, { user, online: formatDate(undefined) });
+        }
+      });
+    }).catch((err) => alert(err.message));
+  }, [user]);
+
   useEffect(() => setSearch(""), [list]);
   useEffect(() => {
     setLoading(true);
     const unsub = onSnapshot(
-      query(collRef, orderBy("imp", "desc"), orderBy("date", "desc")),
+      query(
+        collection(db, "notes"),
+        orderBy("imp", "desc"),
+        orderBy("date", "desc")
+      ),
       (res) => {
         const data = res.docs?.map((doc) => ({
           data: doc.data(),
