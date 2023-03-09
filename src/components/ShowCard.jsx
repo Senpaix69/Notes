@@ -49,6 +49,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
       setLoading,
       setEditNote
     );
+    setAttachment("");
   };
 
   return (
