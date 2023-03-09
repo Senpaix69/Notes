@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { formatDate, uploadFile } from "../utils";
 import butterFly from "../images/butterfly.png";
+import loadingImg from "../images/loadingImg.gif";
 import Form from "./Form";
 
 const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
@@ -193,14 +194,20 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                       {card.text}
                     </p>
                     {card.attachment && (
-                      <div
-                        hidden={loadImg}
-                        className="rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4"
-                      >
+                      <div className="rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4">
+                        {loadImg && (
+                          <img
+                            src={loadingImg}
+                            alt="pic"
+                            className="rounded-lg shadow-lg m-auto"
+                          />
+                        )}
                         <img
+                          placeholder={loadingImg}
                           onLoad={() => setLoadImg(false)}
                           src={card.attachment}
                           alt="pic"
+                          loading="lazy"
                           className="rounded-lg shadow-lg m-auto"
                         />
                       </div>
