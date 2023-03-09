@@ -33,10 +33,10 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     let attachment = formData.attachment;
     if (attachment)
       attachment = await uploadFile(formData.attachment, formData.name);
-    setLoading(true);
     updateNote(
       id,
       {

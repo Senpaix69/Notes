@@ -244,11 +244,6 @@ const Main = ({ logOut, user }) => {
                     />
                   )
                 )}
-                {cards.length === 0 && (
-                  <h2 className="mt-10 w-full text-center font-semibold">
-                    Empty: Add Some Notes😃
-                  </h2>
-                )}
               </>
             ) : (
               <Loading />
