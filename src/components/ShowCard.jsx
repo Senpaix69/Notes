@@ -211,14 +211,14 @@ const ShowCard = ({
                     </p>
                     {card.attachment?.length > 0 && (
                       <div
-                        className={`p-1 shadow-md my-4 rounded-lg overflow-x-scroll flex flex-nowrap items-center scrollbar-hide ${
+                        className={`p-1 shadow-md my-4 rounded-lg border-2 border-purple-200  overflow-x-scroll flex flex-nowrap items-center scrollbar-hide ${
                           card.attachment.length > 1 ? "" : "justify-center"
                         }`}
                       >
                         {card.attachment.map((cardImage, index) => (
                           <div
                             key={index}
-                            className={`"min-w-[200px] h-[200px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2 ${
+                            className={`"min-w-[200px] h-[200px] relative mx-1 rounded-lg ${
                               !zoom ? "" : "min-h-[400px] min-w-[350px]"
                             }`}
                           >
@@ -236,7 +236,7 @@ const ShowCard = ({
                               src={cardImage}
                               alt="pic"
                               loading="lazy"
-                              className={`object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-300 ${
+                              className={`object-contain w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-300 ${
                                 loadImg ? "opacity-0" : "opacity-100"
                               }`}
                             />
