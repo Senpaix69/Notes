@@ -1,53 +1,71 @@
 import React, { useEffect, useRef, useState } from "react";
+import loadingImg from "../images/loadingImg.gif";
 import { compressImage } from "../compressImage";
 
 const Form = (props) => {
   const refInput = useRef();
   const [addLink, setAddLink] = useState(false);
   const [shareWith, setShareWith] = useState("");
-  const [preview, setPreview] = useState("");
+  const [loadImg, setLoadImg] = useState(true);
+  const [previews, setPreviews] = useState([]);
 
   useEffect(() => {
-    let fileReader;
-    const compressAndSetAttachment = async (attachment) => {
+    setPreviews(props.formData?.attachment ?? []);
+  }, [props.formData?.attachment]);
+
+  useEffect(() => {
+    let fileReaders = [];
+    let compressedAttachments = [];
+    const compressAndSetAttachment = async (attachment, index) => {
       try {
         const compressed = await compressImage(attachment);
-        if (compressed) {
+        compressedAttachments[index] = compressed;
+        if (compressedAttachments.length === props.attachment.length) {
           props.setFormData((prevFormData) => ({
             ...prevFormData,
-            attachment: compressed,
+            attachment: prevFormData.attachment
+              ? [...prevFormData.attachment, ...compressedAttachments]
+              : compressedAttachments,
           }));
+          props.setAttachment([]);
         }
       } catch (err) {
         console.log(err.message);
         alert(err.message);
       }
     };
-    if (props.attachment) {
-      fileReader = new FileReader();
-      fileReader.readAsDataURL(props.attachment);
+    for (let i = 0; i < props?.attachment?.length; i++) {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(props?.attachment[i]);
       fileReader.onloadend = () => {
-        setPreview(fileReader.result);
-        compressAndSetAttachment(props.attachment);
+        setPreviews((prevPreviews) => [...prevPreviews, fileReader.result]);
+        fileReaders[i] = fileReader;
+        compressAndSetAttachment(props?.attachment[i], i);
       };
+      fileReaders[i] = fileReader;
     }
     return () => {
-      if (fileReader && fileReader.readyState === FileReader.LOADING) {
-        fileReader.abort();
-      }
+      fileReaders.forEach((fileReader) => {
+        if (fileReader && fileReader.readyState === FileReader.LOADING) {
+          fileReader.abort();
+        }
+      });
     };
   }, [props.attachment]);
 
   useEffect(() => {
     setAddLink(false);
-    props.setAttachment("");
-    setPreview("");
+    props.setAttachment([]);
   }, [props.backCall]);
 
-  const removeAttachment = () => {
-    props.setAttachment("");
-    setPreview("");
-    props.setFormData({ ...props.formData, attachment: "" });
+  const removeAttachment = (index) => {
+    const newAttachments = props.formData.attachment.filter(
+      (_, ind) => ind !== index
+    );
+    props.setFormData((prevFormData) => ({
+      ...prevFormData,
+      attachment: newAttachments,
+    }));
   };
 
   const removeLink = () => {
@@ -125,8 +143,46 @@ const Form = (props) => {
           />
         </div>
         <div className="border-2 border-purple-500"></div>
+        <div
+          className={`overflow-x-scroll flex flex-nowrap items-center scrollbar-hide ${
+            previews.length > 1 ? "" : "justify-center"
+          }`}
+        >
+          {previews.map((cardImage, index) => (
+            <button
+              type="button"
+              disabled={props.loading}
+              onClick={() => removeAttachment(index)}
+              key={index}
+              className="h-[150px] min-w-[150px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4"
+            >
+              <img
+                src={loadingImg}
+                alt="pic"
+                className={`absolute inset-0 object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-150 ${
+                  loadImg ? "opacity-100" : "opacity-0 p-2"
+                }`}
+              />
+              <img
+                placeholder={loadingImg}
+                onLoad={() => setLoadImg(false)}
+                src={cardImage}
+                alt="pic"
+                loading="lazy"
+                className={`object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-300 ${
+                  loadImg ? "opacity-0" : "opacity-100"
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+        {previews.length > 0 && (
+          <h6 className="rounded-lg mt-2 font-semibold cursor-default p-2 m-auto ring-1 ring-purple-400 text-center text-purple-700 text-sm">
+            Click On Image To Remove
+          </h6>
+        )}
 
-        {props.formData?.users && props.formData?.users?.length !== 0 && (
+        {props.formData?.users && props.formData?.users?.length > 0 && (
           <div className="flex items-start justify-center flex-col mt-1">
             <h1 className="font-semibold text-sm my-2">Sharing with: </h1>
             {props.formData.users?.map((user, ind) => (
@@ -147,7 +203,6 @@ const Form = (props) => {
             ))}
           </div>
         )}
-
         <div className="mt-8 flex items-center justify-between gap-6">
           <div className="relative">
             <span className="absolute text-xs top-2 -left-1 text-purple-700 -translate-y-6 scale-90">
@@ -257,53 +312,40 @@ const Form = (props) => {
           ref={refInput}
           hidden
           type="file"
-          accept="image"
-          onChange={(e) => props.setAttachment(e.target.files[0])}
+          accept="image/*"
+          multiple
+          onChange={(e) => props.setAttachment(e.target.files)}
         />
-        {!preview && !props.formData?.attachment ? (
-          <div className="mt-2 w-full flex text-white">
-            <button
-              type="button"
-              disabled={props.loading}
-              onClick={() => refInput.current.click()}
-              className="bg-purple-500 disabled:cursor-not-allowed disabled:bg-purple-300 p-2 px-4 shadow-md rounded-lg gap-3 m-auto flex items-center justify-center hover:bg-purple-800"
+        <div className="mt-2 w-full flex text-white">
+          <button
+            type="button"
+            disabled={props.loading}
+            onClick={() => refInput.current.click()}
+            className="bg-purple-500 disabled:cursor-not-allowed disabled:bg-purple-300 p-2 px-4 shadow-md rounded-lg gap-3 m-auto flex items-center justify-center hover:bg-purple-800"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-8 h-8"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-8 h-8"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
-                />
-              </svg>
-              <h2>Add Picture</h2>
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center flex-col gap-3">
-            <img
-              disabled={props.loading}
-              onClick={removeAttachment}
-              src={preview || props.formData?.attachment}
-              alt="pic"
-              className="h-40 cursor-pointer"
-            />
-            <span className="text-sm font-semibold">
-              click on image to remove
-            </span>
-          </div>
-        )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
+              />
+            </svg>
+            <h2>Add Picture</h2>
+          </button>
+        </div>
+        <div className="flex items-center justify-center flex-col gap-3"></div>
         <button
           disabled={props.loading}
           type="submit"

@@ -24,11 +24,13 @@ const App = () => {
 
   return (
     <div className="relative h-screen max-w-[600px] min-w-[340px] m-auto scrollbar-hide">
-      {!user ? (
-        <Login setUser={setUser} />
-      ) : (
-        <Main logOut={logOut} user={user} />
-      )}
+      <>
+        {!user ? (
+          <Login setUser={setUser} />
+        ) : (
+          <Main logOut={logOut} user={user} />
+        )}
+      </>
     </div>
   );
 };

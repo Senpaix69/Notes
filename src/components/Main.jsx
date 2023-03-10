@@ -14,6 +14,8 @@ import {
 import Header from "./Header";
 import Cards from "./Cards";
 import bg from "../images/bg1.jpg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import plus from "../images/plus.png";
 import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
@@ -68,11 +70,17 @@ const Main = ({ logOut, user }) => {
 
   const deleteNote = (id) => {
     if (window.confirm("Confirm Delete?")) {
+      const toastId = toast.loading("Deleting...");
       deleteDoc(doc(collRef, `/${id}`))
         .then(() => {
+          toast.done(toastId);
+          toast.success("Deleted note successfully");
           setCardShow(undefined);
         })
-        .catch((err) => alert(err.message));
+        .catch((err) => {
+          toast.done(toastId);
+          toast.error(err.message);
+        });
     }
   };
 
@@ -139,6 +147,7 @@ const Main = ({ logOut, user }) => {
       >
         <section hidden={addCard || cardShow === undefined}>
           <ShowCard
+            toast={toast}
             user={user.uid}
             deleteNote={deleteNote}
             setCardShow={setCardShow}
@@ -150,6 +159,7 @@ const Main = ({ logOut, user }) => {
 
         <section hidden={!addCard}>
           <AddCard
+            toast={toast}
             setAddCard={setAddCard}
             user={{ uid: user.uid, name: user.name }}
             addDoc={addDoc}
@@ -267,6 +277,7 @@ const Main = ({ logOut, user }) => {
           } h-14 bg-white rounded-full`}
         />
       </button>
+      <ToastContainer position="top-center" />
     </div>
   );
 };

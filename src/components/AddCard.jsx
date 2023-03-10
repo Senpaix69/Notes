@@ -3,46 +3,58 @@ import { formatDate, uploadFile } from "../utils";
 import butterFly from "../images/butterfly.png";
 import Form from "./Form";
 
-const AddCard = ({ setAddCard, user, addDoc, collRef }) => {
+const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
   const [loading, setLoading] = useState(false);
   const [titleActive, setTitleActive] = useState(false);
   const [textActive, setTextActive] = useState(false);
   const [backCall, setBackCall] = useState(false);
   const [formData, setFormData] = useState({});
-  const [attachment, setAttachment] = useState("");
+  const [attachment, setAttachment] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    let attachment = "";
-    if (formData.attachment)
-      attachment = await uploadFile(formData.attachment, user.name);
+    const toastId = toast.loading("Uploading file...");
+    const attachmentURLs = [];
+    try {
+      for (const attachment of formData.attachment || []) {
+        attachmentURLs.push(await uploadFile(attachment, user.name));
+      }
+    } catch (error) {
+      toast.done(toastId);
+      toast.error(error.message);
+      setLoading(false);
+      return;
+    }
     addDoc(collRef, {
       uid: user.uid,
       name: user.name,
       title: formData.title,
       text: formData.text,
-      label: formData.label || "",
-      link: formData.link || "",
-      imp: formData.imp || false,
-      users: formData.users || [],
-      attachment,
-      date: formatDate(formData.date ? formData.date : undefined),
+      label: formData.label ?? "",
+      link: formData.link ?? "",
+      imp: formData.imp ?? false,
+      users: formData.users ?? [],
+      attachment: attachmentURLs,
+      date: formatDate(formData.date) ?? "",
     })
       .then(() => {
         setFormData({});
-        setAttachment("");
+        setAttachment([]);
         setAddCard(false);
         setTextActive(false);
         setBackCall((prev) => !prev);
         setTitleActive(false);
-        setLoading(false);
+        toast.done(toastId);
+        toast.success("Uploaded Successfully");
       })
       .catch((error) => {
-        alert(error.message);
-        setLoading(false);
-      });
+        toast.done(toastId);
+        toast.error(error.message);
+      })
+      .finally(() => setLoading(false));
   };
+
   return (
     <div>
       <div className="fixed w-full max-w-[600px] top-0 bg-purple-400 p-3 py-4 flex items-center font-bold gap-3 z-50">

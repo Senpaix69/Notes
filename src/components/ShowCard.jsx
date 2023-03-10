@@ -4,7 +4,15 @@ import butterFly from "../images/butterfly.png";
 import loadingImg from "../images/loadingImg.gif";
 import Form from "./Form";
 
-const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
+const ShowCard = ({
+  setCardShow,
+  id,
+  toast,
+  card,
+  deleteNote,
+  updateNote,
+  user,
+}) => {
   const [dropDown, setDropDown] = useState(false);
   const [editNote, setEditNote] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -13,7 +21,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
   const [loadImg, setLoadImg] = useState(true);
   const [backCall, setBackCall] = useState(false);
   const [formData, setFormData] = useState({});
-  const [attachment, setAttachment] = useState("");
+  const [attachment, setAttachment] = useState([]);
 
   useEffect(() => {
     setFormData(card);
@@ -24,14 +32,29 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    let attachment = formData.attachment;
-    if (attachment)
-      attachment = await uploadFile(formData.attachment, formData.name);
+    const toastId = toast.loading("Uploading file...");
+    const attachmentURLs = [];
+    try {
+      for (let i = 0; i < formData?.attachment?.length; i++) {
+        const attachment = formData.attachment[i];
+        const existingAttachment = card.attachment.find(
+          (a) => a === attachment
+        );
+        const attachmentURL =
+          existingAttachment || (await uploadFile(attachment, user));
+        attachmentURLs.push(attachmentURL);
+      }
+    } catch (error) {
+      toast.done(toastId);
+      toast.error(error.message);
+      setLoading(false);
+      return;
+    }
     updateNote(
       id,
       {
         ...formData,
-        attachment,
+        attachment: attachmentURLs,
         date: formData?.date.includes("M")
           ? formData?.date
           : formatDate(formData?.date),
@@ -40,6 +63,8 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
       setEditNote
     );
     setAttachment("");
+    toast.dismiss(toastId);
+    toast.success("Updating Successfull");
   };
 
   return (
@@ -182,29 +207,39 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
                     >
                       {card.text}
                     </p>
-                    {card.attachment && (
-                      <div className="relative rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4">
-                        <img
-                          src={loadingImg}
-                          alt="pic"
-                          className={`rounded-lg shadow-lg m-auto transition-opacity duration-150 ${
-                            loadImg
-                              ? "opacity-100"
-                              : "opacity-0 absolute left-0 p-2"
+                    <div
+                      className={`ring-1 ring-purple-700 p-1 border-2 border-slate-200 shadow-md my-4 rounded-lg overflow-x-scroll flex flex-nowrap items-center scrollbar-hide ${
+                        card.attachment.length > 1 ? "" : "justify-center"
+                      }`}
+                    >
+                      {card.attachment.map((cardImage, index) => (
+                        <div
+                          key={index}
+                          className={`min-w-[200px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2 ${
+                            card.attachment.length > 1 ? "h-[200px]" : ""
                           }`}
-                        />
-                        <img
-                          placeholder={loadingImg}
-                          onLoad={() => setLoadImg(false)}
-                          src={card.attachment}
-                          alt="pic"
-                          loading="lazy"
-                          className={`rounded-lg shadow-lg m-auto transition-opacity duration-300 ${
-                            loadImg ? "opacity-0" : "opacity-100"
-                          }`}
-                        />
-                      </div>
-                    )}
+                        >
+                          <img
+                            src={loadingImg}
+                            alt="pic"
+                            className={`absolute inset-0 object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-150 ${
+                              loadImg ? "opacity-100" : "opacity-0 p-2"
+                            }`}
+                          />
+                          <img
+                            placeholder={loadingImg}
+                            onLoad={() => setLoadImg(false)}
+                            src={cardImage}
+                            alt="pic"
+                            loading="lazy"
+                            className={`object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-300 ${
+                              loadImg ? "opacity-0" : "opacity-100"
+                            }`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
                     {card.link && (
                       <div className="my-4 flex items-start justify-start gap-2 text-sm">
                         <h1 className="font-bold">Link:</h1>
