@@ -218,8 +218,8 @@ const ShowCard = ({
                         {card.attachment.map((cardImage, index) => (
                           <div
                             key={index}
-                            className={`"min-w-[200px] h-[200px] relative mx-1 rounded-lg ${
-                              !zoom ? "" : "min-h-[400px] min-w-[350px]"
+                            className={`"min-w-[200px] w-full h-[200px] relative mx-1 rounded-lg ${
+                              !zoom ? "" : "min-w-[350px] min-h-[400px]"
                             }`}
                           >
                             <img
