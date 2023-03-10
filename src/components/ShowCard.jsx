@@ -79,6 +79,7 @@ const ShowCard = ({
             setDropDown(false);
             setEditNote(false);
             setLoadImg(true);
+            setZoom(false);
           }}
           disabled={loading}
           className="disabled:cursor-wait"
@@ -217,15 +218,15 @@ const ShowCard = ({
                         {card.attachment.map((cardImage, index) => (
                           <div
                             key={index}
-                            className={`"min-w-[200px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2 ${
-                              !zoom ? "" : "min-h-[350px] min-w-[350px]"
+                            className={`"min-w-[200px] h-[200px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2 ${
+                              !zoom ? "" : "min-h-[400px] min-w-[350px]"
                             }`}
                           >
                             <img
                               src={loadingImg}
                               onClick={() => setZoom((prev) => !prev)}
                               alt="pic"
-                              className={`absolute max-h-[200px] inset-0 object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-150 ${
+                              className={`absolute inset-0 object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-150 ${
                                 loadImg ? "opacity-100" : "opacity-0 p-2"
                               }`}
                             />
