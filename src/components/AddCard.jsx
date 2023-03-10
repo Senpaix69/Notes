@@ -8,6 +8,7 @@ const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
   const [titleActive, setTitleActive] = useState(false);
   const [textActive, setTextActive] = useState(false);
   const [backCall, setBackCall] = useState(false);
+  const [newImages, setNewImages] = useState([]);
   const [formData, setFormData] = useState({});
   const [attachment, setAttachment] = useState([]);
 
@@ -17,12 +18,13 @@ const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
     const toastId = toast.loading("Uploading file...");
     const attachmentURLs = [];
     try {
-      for (const attachment of formData.attachment || []) {
+      for (const attachment of newImages || []) {
         attachmentURLs.push(await uploadFile(attachment, user.name));
       }
     } catch (error) {
       toast.done(toastId);
       toast.error(error.message);
+      setAttachment([]);
       setLoading(false);
       return;
     }
@@ -52,7 +54,10 @@ const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
         toast.done(toastId);
         toast.error(error.message);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setAttachment([]);
+      });
   };
 
   return (
@@ -100,6 +105,8 @@ const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
             attachment={attachment}
             titleActive={titleActive}
             textActive={textActive}
+            setNewImages={setNewImages}
+            newImages={newImages}
             setFormData={setFormData}
             handleSubmit={handleSubmit}
             setTextActive={setTextActive}

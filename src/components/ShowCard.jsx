@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { formatDate, uploadFile } from "../utils";
+import { deleteFile, formatDate, uploadFile } from "../utils";
 import butterFly from "../images/butterfly.png";
 import loadingImg from "../images/loadingImg.gif";
 import Form from "./Form";
@@ -22,6 +22,7 @@ const ShowCard = ({
   const [backCall, setBackCall] = useState(false);
   const [formData, setFormData] = useState({});
   const [attachment, setAttachment] = useState([]);
+  const [newImages, setNewImages] = useState([]);
   const [zoom, setZoom] = useState(false);
 
   useEffect(() => {
@@ -36,18 +37,26 @@ const ShowCard = ({
     const toastId = toast.loading("Uploading file...");
     const attachmentURLs = [];
     try {
-      for (let i = 0; i < formData?.attachment?.length; i++) {
+      const deletedAttachments = card.attachment.filter(
+        (a) => !formData.attachment.includes(a)
+      );
+      await Promise.all(deletedAttachments.map((a) => deleteFile(a)));
+      for (let i = 0; i < formData.attachment.length; i++) {
         const attachment = formData.attachment[i];
-        const existingAttachment = card.attachment.find(
-          (a) => a === attachment
-        );
-        const attachmentURL =
-          existingAttachment || (await uploadFile(attachment, user));
-        attachmentURLs.push(attachmentURL);
+        if (!card.attachment.includes(attachment)) {
+          const attachmentURL = await uploadFile(attachment, user);
+          attachmentURLs.push(attachmentURL);
+        } else {
+          attachmentURLs.push(attachment);
+        }
+      }
+      for (const attachment of newImages || []) {
+        attachmentURLs.push(await uploadFile(attachment, user));
       }
     } catch (error) {
       toast.done(toastId);
       toast.error(error.message);
+      setAttachment([]);
       setLoading(false);
       return;
     }
@@ -63,11 +72,19 @@ const ShowCard = ({
       setLoading,
       setEditNote
     );
-    setAttachment("");
+    setAttachment([]);
     toast.dismiss(toastId);
     toast.success("Updating Successfull");
   };
 
+  const handleDelete = async () => {
+    setLoading(true);
+    await deleteNote(
+      id,
+      card?.attachment?.length > 0 ? card.attachment : undefined
+    );
+    setLoading(false);
+  };
   return (
     <div className="h-screen overflow-hidden overflow-y-scroll scrollbar-hide">
       <div className="fixed w-full max-w-[600px] top-0 bg-purple-400 px-3 py-4 flex items-center font-bold gap-3 z-50">
@@ -120,6 +137,7 @@ const ShowCard = ({
           <div className="relative inline-block text-left">
             <div>
               <button
+                disabled={loading}
                 onClick={() => setDropDown((prev) => !prev)}
                 type="button"
                 className="p-2 text-sm font-semibold rounded-full"
@@ -154,6 +172,8 @@ const ShowCard = ({
                   <button
                     onClick={() => {
                       setDropDown(false);
+                      setAttachment([]);
+                      setNewImages([]);
                       editNote ? setEditNote(false) : setEditNote(true);
                     }}
                     className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600 hover:text-white w-full text-left"
@@ -165,7 +185,7 @@ const ShowCard = ({
                   <button
                     onClick={() => {
                       setDropDown(false);
-                      deleteNote(id);
+                      handleDelete();
                     }}
                     className="text-gray-700 block px-4 py-2 text-sm hover:bg-purple-600 hover:text-white w-full text-left"
                     tabIndex="-1"
@@ -302,6 +322,8 @@ const ShowCard = ({
                     formData={formData}
                     titleActive={titleActive}
                     textActive={textActive}
+                    newImages={newImages}
+                    setNewImages={setNewImages}
                     setFormData={setFormData}
                     handleSubmit={handleSubmit}
                     setTextActive={setTextActive}

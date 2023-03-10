@@ -1,4 +1,4 @@
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebaseConfig";
 import { uuidv4 } from "@firebase/util";
 
@@ -15,6 +15,11 @@ export const formatDate = (dateString = new Date()) => {
     ", " +
     new Date().toLocaleTimeString()
   );
+};
+
+export const deleteFile = async (url) => {
+  const storageRef = ref(storage, url);
+  await deleteObject(storageRef);
 };
 
 export const uploadFile = async (file, name) => {

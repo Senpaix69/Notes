@@ -9,28 +9,19 @@ const Form = (props) => {
   const [loadImg, setLoadImg] = useState(true);
   const [previews, setPreviews] = useState([]);
 
-  useEffect(() => {
-    setPreviews(props.formData?.attachment ?? []);
-  }, [props.formData?.attachment]);
-
+  useEffect(() => setPreviews([]), [props.formData?.attachment]);
   useEffect(() => {
     let fileReaders = [];
-    let compressedAttachments = [];
+    const compressedAttachments = [];
     const compressAndSetAttachment = async (attachment, index) => {
       try {
         const compressed = await compressImage(attachment);
         compressedAttachments[index] = compressed;
         if (compressedAttachments.length === props.attachment.length) {
-          props.setFormData((prevFormData) => ({
-            ...prevFormData,
-            attachment: prevFormData.attachment
-              ? [...prevFormData.attachment, ...compressedAttachments]
-              : compressedAttachments,
-          }));
+          props.setNewImages([...compressedAttachments]);
           props.setAttachment([]);
         }
       } catch (err) {
-        console.log(err.message);
         alert(err.message);
       }
     };
@@ -58,14 +49,19 @@ const Form = (props) => {
     props.setAttachment([]);
   }, [props.backCall]);
 
-  const removeAttachment = (index) => {
-    const newAttachments = props.formData.attachment.filter(
-      (_, ind) => ind !== index
-    );
-    props.setFormData((prevFormData) => ({
-      ...prevFormData,
-      attachment: newAttachments,
-    }));
+  const removeAttachment = (index, preview) => {
+    if (preview) {
+      setPreviews((prev) => prev.filter((_, ind) => ind !== index));
+      previews.length === 0 && props.setAttachment([]);
+    } else {
+      const newAttachments = props.formData.attachment.filter(
+        (_, ind) => ind !== index
+      );
+      props.setFormData((prevFormData) => ({
+        ...prevFormData,
+        attachment: newAttachments,
+      }));
+    }
   };
 
   const removeLink = () => {
@@ -143,18 +139,17 @@ const Form = (props) => {
           />
         </div>
         <div className="border-2 border-purple-500"></div>
-        <div
-          className={`overflow-x-scroll flex flex-nowrap items-center scrollbar-hide ${
-            previews.length > 1 ? "" : "justify-center"
-          }`}
-        >
-          {previews.map((cardImage, index) => (
+        {props.formData?.attachment?.length > 0 && (
+          <h1 className="font-semibold text-xs mt-3">Saved Images: </h1>
+        )}
+        <div className="overflow-x-scroll flex flex-nowrap items-center scrollbar-hide">
+          {props.formData?.attachment?.map((cardImage, index) => (
             <button
               type="button"
               disabled={props.loading}
               onClick={() => removeAttachment(index)}
               key={index}
-              className="h-[150px] min-w-[150px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4"
+              className="h-[150px] min-w-[150px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2"
             >
               <img
                 src={loadingImg}
@@ -177,6 +172,31 @@ const Form = (props) => {
           ))}
         </div>
         {previews.length > 0 && (
+          <h1 className="font-semibold text-xs mt-3">New Added: </h1>
+        )}
+        <div className="overflow-x-scroll flex flex-nowrap items-center scrollbar-hide">
+          {previews.map((cardImage, index) => (
+            <button
+              type="button"
+              disabled={props.loading}
+              onClick={() => removeAttachment(index, "preview")}
+              key={index}
+              className="h-[150px] min-w-[150px] relative mx-1 rounded-lg border-2 border-purple-200 shadow-md p-2 mt-4"
+            >
+              <img
+                placeholder={loadingImg}
+                onLoad={() => setLoadImg(false)}
+                src={cardImage}
+                alt="pic"
+                loading="lazy"
+                className={`object-cover w-full h-full rounded-lg shadow-lg m-auto transition-opacity duration-300 ${
+                  loadImg ? "opacity-0" : "opacity-100"
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+        {(previews.length > 0 || props.formData?.attachment?.length > 1) && (
           <h6 className="rounded-lg mt-2 font-semibold cursor-default p-2 m-auto ring-1 ring-purple-400 text-center text-purple-700 text-sm">
             Click On Image To Remove
           </h6>

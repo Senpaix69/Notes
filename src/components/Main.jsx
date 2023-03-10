@@ -14,14 +14,14 @@ import {
 import Header from "./Header";
 import Cards from "./Cards";
 import bg from "../images/bg1.jpg";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import plus from "../images/plus.png";
 import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
 import Loading from "./Loading";
 import SideMenu from "./SideMenu";
-import { formatDate } from "../utils";
+import { deleteFile, formatDate } from "../utils";
 
 const Main = ({ logOut, user }) => {
   const [cardShow, setCardShow] = useState(undefined);
@@ -68,9 +68,14 @@ const Main = ({ logOut, user }) => {
     return () => unsub();
   }, []);
 
-  const deleteNote = (id) => {
+  const deleteNote = async (id, attachments) => {
     if (window.confirm("Confirm Delete?")) {
       const toastId = toast.loading("Deleting...");
+      if (attachments) {
+        for (const attachment of attachments || []) {
+          await deleteFile(attachment);
+        }
+      }
       deleteDoc(doc(collRef, `/${id}`))
         .then(() => {
           toast.done(toastId);
@@ -277,7 +282,14 @@ const Main = ({ logOut, user }) => {
           } h-14 bg-white rounded-full`}
         />
       </button>
-      <ToastContainer position="top-center" />
+      <ToastContainer
+        position="top-left"
+        limit={2}
+        autoClose={3000}
+        hideProgressBar={true}
+        transition={Slide}
+        closeButton={false}
+      />
     </div>
   );
 };
