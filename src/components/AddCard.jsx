@@ -3,7 +3,7 @@ import { formatDate, uploadFile } from "../utils";
 import butterFly from "../images/butterfly.png";
 import Form from "./Form";
 
-const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
+const AddCard = ({ setAddCard, user, addDoc, collRef }) => {
   const [loading, setLoading] = useState(false);
   const [titleActive, setTitleActive] = useState(false);
   const [textActive, setTextActive] = useState(false);
@@ -21,9 +21,9 @@ const AddCard = ({ setAddCard, user, date, addDoc, collRef }) => {
       uid: user.uid,
       name: user.name,
       title: formData.title,
+      text: formData.text,
       label: formData.label || "",
       link: formData.link || "",
-      text: formData.text,
       imp: formData.imp || false,
       users: formData.users || [],
       attachment,

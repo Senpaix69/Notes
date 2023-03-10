@@ -22,7 +22,6 @@ import SideMenu from "./SideMenu";
 import { formatDate } from "../utils";
 
 const Main = ({ logOut, user }) => {
-  const date = new Date();
   const [cardShow, setCardShow] = useState(undefined);
   const [menu, setMenu] = useState(false);
   const [addCard, setAddCard] = useState(false);
@@ -153,7 +152,6 @@ const Main = ({ logOut, user }) => {
           <AddCard
             setAddCard={setAddCard}
             user={{ uid: user.uid, name: user.name }}
-            date={date}
             addDoc={addDoc}
             collRef={collRef}
           />
@@ -232,6 +230,10 @@ const Main = ({ logOut, user }) => {
                 Shared
               </button>
             </ul>
+            <p className="bg-purple-200 p-2 px-4 text-sm mx-2 rounded-md">
+              <span className="font-semibold text-purple-900">Note:</span> I'm
+              Optimizing the app before I add some new features {"<3"}
+            </p>
             {!loading ? (
               <>
                 {filteredNotesBySearch(filteredNotesByName(cards))?.map(

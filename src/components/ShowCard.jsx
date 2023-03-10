@@ -16,18 +16,7 @@ const ShowCard = ({ setCardShow, id, card, deleteNote, updateNote, user }) => {
   const [attachment, setAttachment] = useState("");
 
   useEffect(() => {
-    setFormData({
-      uid: card?.uid,
-      name: card?.name,
-      title: card?.title,
-      text: card?.text,
-      imp: card?.imp,
-      attachment: card?.attachment,
-      label: card?.label,
-      link: card?.link,
-      users: card?.users || [],
-      date: card?.date,
-    });
+    setFormData(card);
     setTitleActive(true);
     setTextActive(true);
   }, [card]);

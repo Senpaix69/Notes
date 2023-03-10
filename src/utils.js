@@ -18,7 +18,7 @@ export const formatDate = (dateString = new Date()) => {
 };
 
 export const uploadFile = async (file, name) => {
-  const storageRef = ref(storage, `attachments/${name + uuidv4()}`);
+  const storageRef = ref(storage, `${name}_data/${name + uuidv4()}`);
   const uploadTask = uploadBytesResumable(storageRef, file);
 
   return new Promise((resolve, reject) => {
