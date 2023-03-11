@@ -12,8 +12,7 @@ const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
   const [formData, setFormData] = useState({});
   const [attachment, setAttachment] = useState([]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
     const toastId = toast.loading("Uploading file...");
     const attachmentURLs = [];
@@ -100,6 +99,7 @@ const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
         </div>
         <div className="bg-slate-100 bg-opacity-50 backdrop-blur-sm rounded-lg px-2 py-6">
           <Form
+            toast={toast}
             backCall={backCall}
             formData={formData}
             attachment={attachment}

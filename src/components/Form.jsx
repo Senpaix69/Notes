@@ -7,6 +7,12 @@ const Form = (props) => {
   const [addLink, setAddLink] = useState(false);
   const [shareWith, setShareWith] = useState("");
   const [loadImg, setLoadImg] = useState(true);
+  const [titleLength, setTitleLength] = useState(
+    20 - (props.formData.title?.length || 0)
+  );
+  const [textLength, setTextLength] = useState(
+    300 - (props.formData.text?.length || 0)
+  );
   const [previews, setPreviews] = useState([]);
 
   useEffect(() => setPreviews([]), [props.formData?.attachment]);
@@ -70,6 +76,11 @@ const Form = (props) => {
   };
 
   const handleChange = (e) => {
+    if (e.target.name === "title") {
+      setTitleLength(20 - e.target.value.length);
+    } else if (e.target.name === "text") {
+      setTextLength(300 - e.target.value.length);
+    }
     props.setFormData({ ...props.formData, [e.target.name]: e.target.value });
   };
 
@@ -85,9 +96,21 @@ const Form = (props) => {
     setShareWith("");
   };
 
+  const checkValidation = (e) => {
+    e.preventDefault();
+    if (textLength < 0) {
+      props.toast.error("Text length exceeded limit");
+      return;
+    } else if (titleLength < 0) {
+      props.toast.error("Title length exceeded limit");
+      return;
+    }
+    props.handleSubmit();
+  };
+
   return (
     <div className="mx-2">
-      <form onSubmit={(e) => props.handleSubmit(e)}>
+      <form onSubmit={(e) => checkValidation(e)}>
         <div className="relative mt-4">
           <span
             className={`absolute text-sm top-2 left-2 text-purple-700 transition-all duration-150 ${
@@ -111,6 +134,15 @@ const Form = (props) => {
             className="block min-h-[auto] disabled:cursor-wait w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
             required
           />
+          <span
+            className={`absolute text-[10px] right-0 -bottom-5 ${
+              titleLength >= 0
+                ? "text-purple-700 font-light"
+                : "text-red-600 font-semibold"
+            }`}
+          >
+            char: {titleLength}
+          </span>
         </div>
         <div className="border-2 border-purple-500"></div>
         <div className="relative mt-8">
@@ -137,6 +169,15 @@ const Form = (props) => {
             className="bg-slate-100 disabled:cursor-wait scrollbar-hide bg-opacity-30 resize-none min-h-[auto] w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
             required
           />
+          <span
+            className={`absolute text-[10px] right-0 -bottom-5 ${
+              textLength >= 0
+                ? "text-purple-700 font-light"
+                : "text-red-600 font-semibold"
+            }`}
+          >
+            char: {textLength}
+          </span>
         </div>
         <div className="border-2 border-purple-500"></div>
         {props.formData?.attachment?.length > 0 && (

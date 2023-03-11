@@ -11,7 +11,7 @@ const Cards = ({ card, setCardShow, user }) => {
           <h1 className="font-bold text-purple-800 flex items-center justify-center gap-4">
             {data?.title}{" "}
             <span className="text-xs">
-              {user === "6MiSvUG1upfAn5OVUyybiSaUnU72"
+              {user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2"
                 ? "(" + data.name + ")"
                 : ""}
             </span>

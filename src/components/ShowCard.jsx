@@ -31,8 +31,7 @@ const ShowCard = ({
     setTextActive(true);
   }, [card]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
     const toastId = toast.loading("Uploading file...");
     const attachmentURLs = [];
@@ -129,7 +128,7 @@ const ShowCard = ({
         </div>
         <div
           className={`absolute right-5 top-4 z-10 ${
-            card?.uid === user || user === "6MiSvUG1upfAn5OVUyybiSaUnU72"
+            card?.uid === user || user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2"
               ? ""
               : "hidden"
           }`}
@@ -280,7 +279,7 @@ const ShowCard = ({
                     )}
                     {card?.users?.length !== 0 &&
                       (card.uid === user ||
-                        user === "6MiSvUG1upfAn5OVUyybiSaUnU72") && (
+                        user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2") && (
                         <div className="flex items-start justify-start flex-col mt-8">
                           <h1 className="font-semibold text-sm my-1">
                             Shared with:
@@ -308,7 +307,7 @@ const ShowCard = ({
                     )}
                     <p className="mt-8 font-semibol text-xs flex items-center flex-col">
                       {(card.uid !== user ||
-                        card?.uid === "6MiSvUG1upfAn5OVUyybiSaUnU72") && (
+                        card?.uid === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2") && (
                         <span>From: {card.name}</span>
                       )}
                       <span>Date: {card.date}</span>
@@ -318,6 +317,7 @@ const ShowCard = ({
               ) : (
                 <div className="w-full">
                   <Form
+                    toast={toast}
                     backCall={backCall}
                     formData={formData}
                     titleActive={titleActive}

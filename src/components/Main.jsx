@@ -117,7 +117,7 @@ const Main = ({ logOut, user }) => {
   };
 
   const filteredNotesByName = (notes) => {
-    const isSenpai = user.uid !== "6MiSvUG1upfAn5OVUyybiSaUnU72";
+    const isSenpai = user.uid !== "FmxmGuIQ75dvrYhTbk1E0bH0YJW2";
     const lowerCaseName = user.name.toLowerCase();
 
     return notes.filter((card) => {
