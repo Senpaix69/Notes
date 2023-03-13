@@ -12,6 +12,10 @@ const Login = ({ setUser }) => {
           const user = {
             uid: res.user.uid,
             name: res.user.displayName,
+            username: res.user.displayName
+              .split(" ")
+              .join("")
+              .toLocaleLowerCase(),
             email: res.user.email,
             phoneNo: res.user.phoneNumber,
             profilePic: res.user.photoURL,

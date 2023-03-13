@@ -22,7 +22,8 @@ const Header = ({ user, setMenu, search, setSearch }) => {
           </svg>
         </button>
         <h1 className="text-fuchsia-900 font-bold text-[1.2rem] font-serif">
-          {user.name}'s <span className="text-white">Notes</span>
+          {user.nickname || user.name}'s{" "}
+          <span className="text-white">Notes</span>
         </h1>
       </div>
 

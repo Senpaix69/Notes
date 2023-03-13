@@ -4,19 +4,24 @@ import Main from "./components/Main";
 import { auth, signOut } from "./firebaseConfig";
 
 const App = () => {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     let User = localStorage.getItem("cred");
     setUser(JSON.parse(User));
   }, []);
 
+  useEffect(() => {
+    if (user?.profile || user?.nickname)
+      localStorage.setItem("cred", JSON.stringify(user));
+  }, [user?.profile, user?.nickname]);
+
   const logOut = () => {
     if (window.confirm("Do you want to logout?")) {
       signOut(auth)
         .then(() => {
           localStorage.removeItem("cred");
-          setUser("");
+          setUser(null);
         })
         .catch((error) => alert(error.message));
     }
@@ -28,7 +33,7 @@ const App = () => {
         {!user ? (
           <Login setUser={setUser} />
         ) : (
-          <Main logOut={logOut} user={user} />
+          <Main logOut={logOut} user={user} setUser={setUser} />
         )}
       </>
     </div>

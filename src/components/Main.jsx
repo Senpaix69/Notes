@@ -10,6 +10,7 @@ import {
   deleteDoc,
   doc,
   setDoc,
+  getDoc,
 } from "firebase/firestore";
 import Header from "./Header";
 import Cards from "./Cards";
@@ -22,25 +23,33 @@ import ShowCard from "./ShowCard";
 import Loading from "./Loading";
 import SideMenu from "./SideMenu";
 import { deleteFile, formatDate } from "../utils";
+import ProfileForm from "./Profile";
 
-const Main = ({ logOut, user }) => {
+const Main = ({ logOut, user, setUser }) => {
+  const [list, setList] = useState([true, false, false, false, false]);
   const [cardShow, setCardShow] = useState(undefined);
+  const [editProfile, setEditProfile] = useState(false);
   const [menu, setMenu] = useState(false);
   const [addCard, setAddCard] = useState(false);
-  const [list, setList] = useState([true, false, false, false, false]);
   const [loading, setLoading] = useState(false);
   const [cards, setCards] = useState([]);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState(0);
   const collRef = collection(db, "notes");
+  const userRef = doc(
+    db,
+    `users/${(user.name + "-" + user.uid).toLowerCase()}`
+  );
 
   useEffect(() => {
-    const userRef = doc(
-      db,
-      `users/${(user.name + "-" + user.uid).toLowerCase()}`
-    );
     const data = { user, online: formatDate(undefined) };
     setDoc(userRef, data, { merge: true }).catch((err) => alert(err.message));
+    getDoc(userRef)
+      .then((res) => {
+        if (user.nickname === undefined || user.profile === undefined)
+          setUser(res.data().user);
+      })
+      .catch((err) => toast.error(err.message));
   }, [user]);
 
   useEffect(() => setSearch(""), [list]);
@@ -144,13 +153,18 @@ const Main = ({ logOut, user }) => {
     });
   };
 
+  const handleProfile = () => {
+    setMenu(false);
+    setEditProfile(true);
+  };
+
   return (
     <div>
       <div
         style={{ backgroundImage: `url(${bg})` }}
         className="h-screen bg-cover scroll-smooth overflow-hidden overflow-y-scroll scrollbar-hide"
       >
-        <section hidden={addCard || cardShow === undefined}>
+        <section hidden={addCard || cardShow === undefined || editProfile}>
           <ShowCard
             toast={toast}
             user={user.uid}
@@ -159,6 +173,15 @@ const Main = ({ logOut, user }) => {
             card={cardShow?.data}
             id={cardShow?.id}
             updateNote={updateNote}
+          />
+        </section>
+
+        <section hidden={addCard || cardShow !== undefined || !editProfile}>
+          <ProfileForm
+            setEditProfile={setEditProfile}
+            user={user}
+            setUser={setUser}
+            toast={toast}
           />
         </section>
 
@@ -171,7 +194,7 @@ const Main = ({ logOut, user }) => {
             collRef={collRef}
           />
         </section>
-        <div hidden={addCard || cardShow !== undefined}>
+        <div hidden={addCard || cardShow !== undefined || editProfile}>
           <div
             onClick={() => setMenu(false)}
             className={`absolute top-0 backdrop-blur-sm w-full h-full transition-all ease-in-out duration-300 ${
@@ -185,7 +208,11 @@ const Main = ({ logOut, user }) => {
                 : "w-0 h-0 -translate-x-full opacity-0"
             }`}
           >
-            <SideMenu user={user} logOut={logOut} />
+            <SideMenu
+              user={user}
+              logOut={logOut}
+              handleProfile={handleProfile}
+            />
           </div>
           <section className="fixed top-0 w-full z-30">
             <Header
@@ -249,6 +276,10 @@ const Main = ({ logOut, user }) => {
               <span className="font-semibold text-purple-900">Note:</span> I'm
               Optimizing the app before I add some new features {"<3"}
             </p>
+            <p className="bg-purple-200 p-2 px-4 text-sm mx-2 rounded-md">
+              <span className="font-semibold text-green-900">Update:</span> You
+              can edit your profile
+            </p>
             {!loading ? (
               <>
                 {filteredNotesBySearch(filteredNotesByName(cards))?.map(
@@ -270,7 +301,7 @@ const Main = ({ logOut, user }) => {
       </div>
 
       <button
-        hidden={addCard || cardShow !== undefined}
+        hidden={addCard || cardShow !== undefined || editProfile}
         onClick={() => setAddCard(true)}
         className="absolute bottom-5 right-8"
       >
