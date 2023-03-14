@@ -131,7 +131,8 @@ const Main = ({ logOut, user, setUser }) => {
         return card.data.uid === user.uid || !isSenpai;
       } else if (sortBy === 2) {
         return (
-          card.data.attachment && (card.data.uid === user.uid || !isSenpai)
+          card.data.attachment.length > 0 &&
+          (card.data.uid === user.uid || !isSenpai)
         );
       } else if (sortBy === 3) {
         return card.data.link && (card.data.uid === user.uid || !isSenpai);
