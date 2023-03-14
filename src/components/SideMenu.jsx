@@ -8,7 +8,7 @@ const SideMenu = ({ user, logOut, handleProfile }) => {
           <img
             src={user.profile || user.profilePic}
             alt="profile"
-            className="rounded-full h-10 border-2 border-purple-900 p-[1px]"
+            className="rounded-full h-10 w-10 border-2 border-purple-900 p-[1px]"
           />
           <div>
             <h1 className="text-lg font-bold">{user.nickname || user.name}</h1>

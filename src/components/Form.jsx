@@ -11,7 +11,7 @@ const Form = (props) => {
     20 - (props.formData.title?.length || 0)
   );
   const [textLength, setTextLength] = useState(
-    300 - (props.formData.text?.length || 0)
+    1000 - (props.formData.text?.length || 0)
   );
   const [previews, setPreviews] = useState([]);
 
@@ -79,7 +79,7 @@ const Form = (props) => {
     if (e.target.name === "title") {
       setTitleLength(20 - e.target.value.length);
     } else if (e.target.name === "text") {
-      setTextLength(300 - e.target.value.length);
+      setTextLength(1000 - e.target.value.length);
     }
     props.setFormData({ ...props.formData, [e.target.name]: e.target.value });
   };

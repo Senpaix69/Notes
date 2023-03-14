@@ -10,7 +10,6 @@ import {
   deleteDoc,
   doc,
   setDoc,
-  getDoc,
 } from "firebase/firestore";
 import Header from "./Header";
 import Cards from "./Cards";
@@ -44,12 +43,6 @@ const Main = ({ logOut, user, setUser }) => {
   useEffect(() => {
     const data = { user, online: formatDate(undefined) };
     setDoc(userRef, data, { merge: true }).catch((err) => alert(err.message));
-    getDoc(userRef)
-      .then((res) => {
-        if (user.nickname === undefined || user.profile === undefined)
-          setUser(res.data().user);
-      })
-      .catch((err) => toast.error(err.message));
   }, [user]);
 
   useEffect(() => setSearch(""), [list]);
