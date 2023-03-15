@@ -1,6 +1,16 @@
 import React from "react";
 const Cards = ({ card, setCardShow, user }) => {
   const { data } = card;
+
+  const getUnread = () => {
+    return data.users.some(
+      (cuser) =>
+        cuser.name &&
+        cuser.name.toLowerCase() === user.name.toLowerCase() &&
+        !cuser.read
+    );
+  };
+
   return (
     <div className="relative p-1 px-2 w-full backdrop-blur-sm">
       <button
@@ -10,10 +20,11 @@ const Cards = ({ card, setCardShow, user }) => {
         <div className="flex items-start justify-start flex-col">
           <h1 className="font-bold text-purple-800 flex items-center justify-center gap-4">
             {data?.title}{" "}
-            <span className="text-xs">
-              {user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2"
-                ? "(" + data.name + ")"
-                : ""}
+            {user.uid === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2" && (
+              <span className="text-xs">{"(" + data.name + ")"}</span>
+            )}
+            <span className="text-xs text-red-500 animate-pulse duration-500">
+              {getUnread() ? "new" : ""}
             </span>
           </h1>
           <p className="text-sm font-semibold truncate max-w-[300px] text-slate-800">

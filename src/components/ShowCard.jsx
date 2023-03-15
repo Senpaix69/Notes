@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deleteFile, formatDate, uploadFile } from "../utils";
+import { deleteFile, formatDate, uploadFile, getUnread } from "../utils";
 import butterFly from "../images/butterfly.png";
 import loadingImg from "../images/loadingImg.gif";
 import Form from "./Form";
@@ -26,9 +26,14 @@ const ShowCard = ({
   const [zoom, setZoom] = useState(false);
 
   useEffect(() => {
-    setFormData(card);
-    setTitleActive(true);
-    setTextActive(true);
+    if (card) {
+      setFormData(card);
+      setTitleActive(true);
+      setTextActive(true);
+      if (getUnread(card.users, user.name)) {
+        console.log("first");
+      }
+    }
   }, [card]);
 
   const handleSubmit = async () => {
@@ -128,7 +133,8 @@ const ShowCard = ({
         </div>
         <div
           className={`absolute right-5 top-4 z-10 ${
-            card?.uid === user || user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2"
+            card?.uid === user.uid ||
+            user.uid === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2"
               ? ""
               : "hidden"
           }`}
@@ -286,8 +292,8 @@ const ShowCard = ({
                     )}
 
                     {card?.users?.length > 0 &&
-                      (card?.uid === user ||
-                        user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2") && (
+                      (card?.uid === user.uid ||
+                        user.uid === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2") && (
                         <div className="my-4 text-sm font-semibold shadow-sm border-2 p-2 border-purple-200 rounded-md">
                           <h1>Sharing with users</h1>
                           <div className="flex flex-col">

@@ -48,6 +48,21 @@ const Main = ({ logOut, user, setUser }) => {
 
   useEffect(() => setSearch(""), [list]);
   useEffect(() => {
+    const currentUser = user.name.toLowerCase();
+    const hasUnreadNotes = cards.some((card) => {
+      return (
+        card.data.users &&
+        card.data.users.some(
+          (user) =>
+            user.name && user.name.toLowerCase() === currentUser && !user.read
+        )
+      );
+    });
+
+    setNewNotes(hasUnreadNotes);
+  }, [cards, newNotes, user.name]);
+
+  useEffect(() => {
     setLoading(true);
     const unsub = onSnapshot(
       query(
@@ -92,7 +107,7 @@ const Main = ({ logOut, user, setUser }) => {
     }
   };
 
-  const updateNote = (id, formData, setLoading, setEditNote) => {
+  const updateNote = (id, formData, setLoading, setEditNote, arg) => {
     updateDoc(doc(collRef, `/${id}`), formData)
       .then(() => {
         setCardShow({ data: formData, id: id });
@@ -113,27 +128,23 @@ const Main = ({ logOut, user, setUser }) => {
         card.data.name.toLowerCase().includes(search.toLowerCase()) ||
         card.data.text.toLowerCase().includes(search.toLowerCase()) ||
         card.data.date.toLowerCase().includes(search.toLowerCase()) ||
-        card.data.title.toLowerCase().includes(search.toLowerCase())
+        card.data.title.toLowerCase().includes(search.toLowerCase()) ||
+        card.data.link.toLowerCase().includes(search.toLowerCase()) ||
+        card.data.label.toLowerCase().includes(search.toLowerCase())
     );
-  };
-
-  const recievedNotes = (note) => {
-    const lowerCaseName = user.name.toLowerCase();
-    if (note?.name) {
-      if (note.name.toLowerCase().includes(lowerCaseName)) {
-        if (!newNotes && !note.read) setNewNotes(true);
-        return note;
-      }
-    } else if (note.toLowerCase().includes(lowerCaseName)) {
-      return note;
-    }
   };
 
   const filteredNotesByName = (notes) => {
     const isSenpai = user.uid !== "FmxmGuIQ75dvrYhTbk1E0bH0YJW2";
+    const lowerCaseName = user.name.toLowerCase();
+
     return notes.filter((card) => {
       if (sortBy === 1) {
-        return card.data.users?.some((u) => recievedNotes(u));
+        return card.data.users?.some((u) =>
+          u?.name
+            ? u.name.toLowerCase().includes(lowerCaseName)
+            : u.toLowerCase().includes(lowerCaseName)
+        );
       } else if (sortBy === 0) {
         return card.data.uid === user.uid || !isSenpai;
       } else if (sortBy === 2) {
@@ -168,7 +179,7 @@ const Main = ({ logOut, user, setUser }) => {
         <section hidden={addCard || cardShow === undefined || editProfile}>
           <ShowCard
             toast={toast}
-            user={user.uid}
+            user={{ uid: user.uid, name: user.name }}
             deleteNote={deleteNote}
             setCardShow={setCardShow}
             card={cardShow?.data}
@@ -239,8 +250,12 @@ const Main = ({ logOut, user, setUser }) => {
               <button
                 type="button"
                 className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
-                  list[1] ? "bg-purple-800" : ""
-                } ${newNotes ? "animate-pulse duration-300 bg-red-400" : ""}`}
+                  list[1]
+                    ? "bg-purple-800"
+                    : newNotes
+                    ? "duration-500 animate-pulse bg-red-500"
+                    : ""
+                }`}
                 onClick={() => switchList(1)}
               >
                 Recieved
@@ -284,18 +299,16 @@ const Main = ({ logOut, user, setUser }) => {
               </p>
             </div>
             {!loading ? (
-              <>
-                {filteredNotesBySearch(filteredNotesByName(cards))?.map(
-                  (card, index) => (
-                    <Cards
-                      key={index}
-                      user={user.uid}
-                      card={card}
-                      setCardShow={setCardShow}
-                    />
-                  )
-                )}
-              </>
+              filteredNotesBySearch(filteredNotesByName(cards))?.map(
+                (card, index) => (
+                  <Cards
+                    key={index}
+                    user={{ uid: user.uid, name: user.name }}
+                    card={card}
+                    setCardShow={setCardShow}
+                  />
+                )
+              )
             ) : (
               <Loading />
             )}

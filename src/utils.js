@@ -1,4 +1,9 @@
-import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { storage } from "./firebaseConfig";
 import { uuidv4 } from "@firebase/util";
 
@@ -49,4 +54,13 @@ export const uploadFile = async (file, name) => {
       }
     );
   });
+};
+
+export const getUnread = (users, user) => {
+  return users.some(
+    (cuser) =>
+      cuser.name &&
+      cuser.name.toLowerCase() === user.toLowerCase() &&
+      !cuser.read
+  );
 };
