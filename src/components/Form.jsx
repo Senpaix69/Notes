@@ -7,6 +7,7 @@ const Form = (props) => {
   const [addLink, setAddLink] = useState(false);
   const [shareWith, setShareWith] = useState("");
   const [loadImg, setLoadImg] = useState(true);
+  const [link, setLink] = useState(null);
   const [titleLength, setTitleLength] = useState(
     20 - (props.formData.title?.length || 0)
   );
@@ -70,11 +71,6 @@ const Form = (props) => {
     }
   };
 
-  const removeLink = () => {
-    props.setFormData({ ...props.formData, label: "", link: "" });
-    setAddLink(false);
-  };
-
   const handleChange = (e) => {
     if (e.target.name === "title") {
       setTitleLength(20 - e.target.value.length);
@@ -106,6 +102,16 @@ const Form = (props) => {
       return;
     }
     props.handleSubmit();
+  };
+
+  const handleLinks = (ind) => {
+    const newLinks =
+      ind !== undefined
+        ? (props.formData?.links || []).filter((_, i) => i !== ind)
+        : [...(props.formData?.links || []), link];
+    props.setFormData((formData) => ({ ...formData, links: newLinks }));
+    setAddLink(false);
+    setLink(null);
   };
 
   return (
@@ -243,7 +249,7 @@ const Form = (props) => {
           </h6>
         )}
 
-        {props.formData?.users && props.formData?.users?.length > 0 && (
+        {props.formData?.users?.length > 0 && (
           <div className="flex items-start justify-center flex-col mt-1">
             <h1 className="font-semibold text-sm my-2">Sharing with: </h1>
             {props.formData.users?.map((user, ind) => (
@@ -260,6 +266,32 @@ const Form = (props) => {
                   Remove
                 </button>
                 <h1 className="font-semibold">{user}</h1>
+              </div>
+            ))}
+          </div>
+        )}
+        {props.formData?.links?.length > 0 && (
+          <div className="flex items-start justify-center flex-col mt-1">
+            <h1 className="font-semibold text-sm my-2">Links Added: </h1>
+            {props.formData.links?.map((link, ind) => (
+              <div
+                key={ind}
+                className="ml-4 mt-1 text-sm flex items-center justify-between gap-2"
+              >
+                <button
+                  disabled={props.loading}
+                  type="button"
+                  onClick={() => handleLinks(ind)}
+                  className="bg-purple-500 disabled:bg-purple-300 disabled:cursor-wait text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+                >
+                  Remove
+                </button>
+                <a
+                  href={link.src}
+                  className="font-semibold text-blue-800 underline"
+                >
+                  {link.label}
+                </a>
               </div>
             ))}
           </div>
@@ -336,8 +368,8 @@ const Form = (props) => {
               <input
                 disabled={props.loading}
                 name="label"
-                value={props.formData.label || ""}
-                onChange={(e) => handleChange(e)}
+                value={link?.label || ""}
+                onChange={(e) => setLink({ ...link, label: e.target.value })}
                 type="text"
                 className="block min-h-[auto] disabled:cursor-wait w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
                 required
@@ -351,22 +383,32 @@ const Form = (props) => {
               <input
                 disabled={props.loading}
                 name="link"
-                value={props.formData.link || ""}
-                onChange={(e) => handleChange(e)}
+                value={link?.src || ""}
+                onChange={(e) => setLink({ ...link, src: e.target.value })}
                 type="text"
                 className="block min-h-[auto] disabled:cursor-wait w-full rounded border-0 bg-transparent py-[0.32rem] px-3 outline-none"
                 required
               />
             </div>
             <div className="border-2 border-purple-500"></div>
-            <button
-              disabled={props.loading}
-              onClick={removeLink}
-              type="button"
-              className="ml-2 mt-5 disabled:cursor-not-allowed disabled:bg-purple-300 bg-purple-500 text-white rounded bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
-            >
-              Remove
-            </button>
+            <div className="mx-2 mt-5 flex items-center justify-between">
+              <button
+                disabled={props.loading}
+                onClick={() => handleLinks(undefined)}
+                type="button"
+                className="disabled:cursor-not-allowed disabled:bg-purple-300 bg-purple-500 text-white rounded bg-primary w-24 px-6 py-2.5 text-[10px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+              >
+                Add
+              </button>
+              <button
+                disabled={props.loading}
+                onClick={() => setAddLink(false)}
+                type="button"
+                className="disabled:cursor-not-allowed disabled:bg-purple-300 bg-purple-500 text-white rounded bg-primary w-24 px-6 py-2.5 text-[10px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
         <input

@@ -266,14 +266,16 @@ const Main = ({ logOut, user, setUser }) => {
                 Shared
               </button>
             </ul>
-            <p className="bg-purple-200 p-2 px-4 text-sm mx-2 rounded-md">
-              <span className="font-semibold text-purple-900">Note:</span> I'm
-              Optimizing the app before I add some new features {"<3"}
-            </p>
-            <p className="bg-purple-200 p-2 px-4 text-sm mx-2 rounded-md">
-              <span className="font-semibold text-green-900">Update:</span> You
-              can edit your profile
-            </p>
+            <div className="bg-purple-200 p-2 px-4 text-sm mx-2 rounded-md flex items-start justify-start gap-1 flex-col">
+              <p>
+                <span className="font-semibold text-green-900">Profile:</span>{" "}
+                You can edit your profile and nickname
+              </p>
+              <p>
+                <span className="font-semibold text-green-900">Links:</span> You
+                can add multiple links
+              </p>
+            </div>
             {!loading ? (
               <>
                 {filteredNotesBySearch(filteredNotesByName(cards))?.map(

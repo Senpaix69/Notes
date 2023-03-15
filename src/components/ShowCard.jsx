@@ -264,17 +264,24 @@ const ShowCard = ({
                       </div>
                     )}
 
-                    {card.link && (
-                      <div className="my-4 flex items-start justify-start gap-2 text-sm">
-                        <h1 className="font-bold">Link:</h1>
-                        <a
-                          className="hover:text-blue-800 underline underline-offset-2"
-                          href={card.link}
-                          target="_parent"
-                          rel="noreferrer"
-                        >
-                          {card.label}
-                        </a>
+                    {card?.links?.length > 0 && (
+                      <div className="my-4 flex items-start justify-start flex-col gap-1 text-sm">
+                        {card.links.map((link, ind) => (
+                          <div
+                            className="flex items-start justify-start gap-2"
+                            key={ind}
+                          >
+                            <h1 className="font-bold">Link {ind + 1}:</h1>
+                            <a
+                              className="text-blue-700 underline underline-offset-2"
+                              href={link.src}
+                              target="_parent"
+                              rel="noreferrer"
+                            >
+                              {link.label}
+                            </a>
+                          </div>
+                        ))}
                       </div>
                     )}
                     {card?.users?.length !== 0 &&
