@@ -113,9 +113,7 @@ const Main = ({ logOut, user, setUser }) => {
         card.data.name.toLowerCase().includes(search.toLowerCase()) ||
         card.data.text.toLowerCase().includes(search.toLowerCase()) ||
         card.data.date.toLowerCase().includes(search.toLowerCase()) ||
-        card.data.title.toLowerCase().includes(search.toLowerCase()) ||
-        card.data.link.toLowerCase().includes(search.toLowerCase()) ||
-        card.data.label.toLowerCase().includes(search.toLowerCase())
+        card.data.title.toLowerCase().includes(search.toLowerCase())
     );
   };
 
