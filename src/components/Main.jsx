@@ -125,7 +125,9 @@ const Main = ({ logOut, user, setUser }) => {
     return notes.filter((card) => {
       if (sortBy === 1) {
         return card.data.users?.some((u) =>
-          u.toLowerCase().includes(lowerCaseName)
+          u?.name
+            ? u.name.toLowerCase().includes(lowerCaseName)
+            : u.toLowerCase().includes(lowerCaseName)
         );
       } else if (sortBy === 0) {
         return card.data.uid === user.uid || !isSenpai;

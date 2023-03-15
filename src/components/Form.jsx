@@ -81,14 +81,16 @@ const Form = (props) => {
   };
 
   const handleShareWith = (ind) => {
+    const { formData, setFormData } = props;
+    const { users = [] } = formData;
     const newUsers =
       ind !== undefined
-        ? (props.formData?.users || []).filter((_, i) => i !== ind)
+        ? [...users.slice(0, ind), ...users.slice(ind + 1)]
         : [
-            ...(props.formData?.users || []),
-            shareWith?.split()?.join("")?.toLowerCase(),
+            ...users,
+            { name: shareWith?.split()?.join("")?.toLowerCase(), read: false },
           ];
-    props.setFormData((formData) => ({ ...formData, users: newUsers }));
+    setFormData({ ...formData, users: newUsers });
     setShareWith("");
   };
 
@@ -265,7 +267,7 @@ const Form = (props) => {
                 >
                   Remove
                 </button>
-                <h1 className="font-semibold">{user}</h1>
+                <h1 className="font-semibold">{user?.name || user}</h1>
               </div>
             ))}
           </div>
@@ -326,7 +328,7 @@ const Form = (props) => {
                 className="block min-h-[auto] disabled:cursor-wait placeholder:text-black text-sm rounded border-0 bg-transparent py-[0.32rem] px-1 outline-none"
               />
               <button
-                onClick={() => handleShareWith()}
+                onClick={() => handleShareWith(undefined)}
                 disabled={shareWith === ""}
                 type="button"
                 className="absolute top-[2.5px] right-0 bg-purple-500 disabled:bg-purple-300 text-white rounded bg-primary px-2 py-1 text-[9px] font-medium uppercase leading-tight shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg hover:bg-purple-800"

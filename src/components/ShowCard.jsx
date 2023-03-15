@@ -275,7 +275,7 @@ const ShowCard = ({
                             <a
                               className="text-blue-700 underline underline-offset-2"
                               href={link.src}
-                              target="_parent"
+                              target="_top"
                               rel="noreferrer"
                             >
                               {link.label}
@@ -284,25 +284,43 @@ const ShowCard = ({
                         ))}
                       </div>
                     )}
-                    {card?.users?.length !== 0 &&
-                      (card.uid === user ||
-                        user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2") && (
-                        <div className="flex items-start justify-start flex-col mt-8">
-                          <h1 className="font-semibold text-sm my-1">
-                            Shared with:
-                          </h1>
-                          {card.users?.map((User, ind) => (
+
+                    {card?.users?.length > 0 && (
+                      <div className="text-sm font-semibold shadow-sm border-2 p-2 border-purple-200 rounded-md">
+                        <h1>Sharing with users</h1>
+                        <div className="flex flex-col">
+                          <div className="flex font-semibold">
+                            <div className="w-1/2">User</div>
+                            <div className="w-1/2">Status</div>
+                          </div>
+                          {card.users?.map((curUser, ind) => (
                             <div
                               key={ind}
-                              className="ml-10 mt-1 w-full max-w-[140px] gap-2"
+                              className="flex justify-between items-center"
                             >
-                              <h6 className="text-xs lowercase">
-                                {ind + 1}: {User}
-                              </h6>
+                              <div className="w-1/2">
+                                <h6 className="text-xs lowercase">
+                                  {curUser?.name || curUser}
+                                </h6>
+                              </div>
+                              <div className="w-1/2">
+                                {curUser.read !== undefined && (
+                                  <h6
+                                    className={`text-xs lowercase ${
+                                      curUser.read
+                                        ? "text-green-500"
+                                        : "text-red-500"
+                                    }`}
+                                  >
+                                    {curUser.read ? "Read" : "Unread"}
+                                  </h6>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
-                      )}
+                      </div>
+                    )}
                     {card?.imp && (
                       <svg
                         className="absolute right-6 bottom-6 h-4 fill-purple-800"
