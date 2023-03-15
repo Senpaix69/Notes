@@ -32,6 +32,7 @@ const Main = ({ logOut, user, setUser }) => {
   const [addCard, setAddCard] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cards, setCards] = useState([]);
+  const [newNotes, setNewNotes] = useState(false);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState(0);
   const collRef = collection(db, "notes");
@@ -118,17 +119,23 @@ const Main = ({ logOut, user, setUser }) => {
     );
   };
 
+  const recievedNotes = (note) => {
+    const lowerCaseName = user.name.toLowerCase();
+    if (note?.name) {
+      if (note.name.toLowerCase().includes(lowerCaseName)) {
+        if (!newNotes && !note.read) setNewNotes(true);
+        return note;
+      }
+    } else if (note.toLowerCase().includes(lowerCaseName)) {
+      return note;
+    }
+  };
+
   const filteredNotesByName = (notes) => {
     const isSenpai = user.uid !== "FmxmGuIQ75dvrYhTbk1E0bH0YJW2";
-    const lowerCaseName = user.name.toLowerCase();
-
     return notes.filter((card) => {
       if (sortBy === 1) {
-        return card.data.users?.some((u) =>
-          u?.name
-            ? u.name.toLowerCase().includes(lowerCaseName)
-            : u.toLowerCase().includes(lowerCaseName)
-        );
+        return card.data.users?.some((u) => recievedNotes(u));
       } else if (sortBy === 0) {
         return card.data.uid === user.uid || !isSenpai;
       } else if (sortBy === 2) {
@@ -235,7 +242,7 @@ const Main = ({ logOut, user, setUser }) => {
                 type="button"
                 className={`text-[10px] cursor-pointer w-20 font-semibold py-2 px-1.5 text-white rounded leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg ${
                   list[1] ? "bg-purple-800" : ""
-                }`}
+                } ${newNotes ? "animate-pulse duration-300 bg-red-400" : ""}`}
                 onClick={() => switchList(1)}
               >
                 Recieved

@@ -288,7 +288,7 @@ const ShowCard = ({
                     {card?.users?.length > 0 &&
                       (card?.uid === user ||
                         user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2") && (
-                        <div className="text-sm font-semibold shadow-sm border-2 p-2 border-purple-200 rounded-md">
+                        <div className="my-4 text-sm font-semibold shadow-sm border-2 p-2 border-purple-200 rounded-md">
                           <h1>Sharing with users</h1>
                           <div className="flex flex-col">
                             <div className="flex font-semibold">

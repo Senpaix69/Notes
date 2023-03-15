@@ -9,7 +9,7 @@ const Form = (props) => {
   const [loadImg, setLoadImg] = useState(true);
   const [link, setLink] = useState(null);
   const [titleLength, setTitleLength] = useState(
-    20 - (props.formData.title?.length || 0)
+    25 - (props.formData.title?.length || 0)
   );
   const [textLength, setTextLength] = useState(
     1000 - (props.formData.text?.length || 0)
@@ -73,7 +73,7 @@ const Form = (props) => {
 
   const handleChange = (e) => {
     if (e.target.name === "title") {
-      setTitleLength(20 - e.target.value.length);
+      setTitleLength(25 - e.target.value.length);
     } else if (e.target.name === "text") {
       setTextLength(1000 - e.target.value.length);
     }
