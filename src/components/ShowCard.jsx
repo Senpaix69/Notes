@@ -285,42 +285,44 @@ const ShowCard = ({
                       </div>
                     )}
 
-                    {card?.users?.length > 0 && (
-                      <div className="text-sm font-semibold shadow-sm border-2 p-2 border-purple-200 rounded-md">
-                        <h1>Sharing with users</h1>
-                        <div className="flex flex-col">
-                          <div className="flex font-semibold">
-                            <div className="w-1/2">User</div>
-                            <div className="w-1/2">Status</div>
-                          </div>
-                          {card.users?.map((curUser, ind) => (
-                            <div
-                              key={ind}
-                              className="flex justify-between items-center"
-                            >
-                              <div className="w-1/2">
-                                <h6 className="text-xs lowercase">
-                                  {curUser?.name || curUser}
-                                </h6>
-                              </div>
-                              <div className="w-1/2">
-                                {curUser.read !== undefined && (
-                                  <h6
-                                    className={`text-xs lowercase ${
-                                      curUser.read
-                                        ? "text-green-500"
-                                        : "text-red-500"
-                                    }`}
-                                  >
-                                    {curUser.read ? "Read" : "Unread"}
-                                  </h6>
-                                )}
-                              </div>
+                    {card?.users?.length > 0 &&
+                      (card?.uid === user ||
+                        user === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2") && (
+                        <div className="text-sm font-semibold shadow-sm border-2 p-2 border-purple-200 rounded-md">
+                          <h1>Sharing with users</h1>
+                          <div className="flex flex-col">
+                            <div className="flex font-semibold">
+                              <div className="w-1/2">User</div>
+                              <div className="w-1/2">Status</div>
                             </div>
-                          ))}
+                            {card.users?.map((curUser, ind) => (
+                              <div
+                                key={ind}
+                                className="flex justify-between items-center"
+                              >
+                                <div className="w-1/2">
+                                  <h6 className="text-xs lowercase">
+                                    {curUser?.name || curUser}
+                                  </h6>
+                                </div>
+                                <div className="w-1/2">
+                                  {curUser.read !== undefined && (
+                                    <h6
+                                      className={`text-xs lowercase ${
+                                        curUser.read
+                                          ? "text-green-500"
+                                          : "text-red-500"
+                                      }`}
+                                    >
+                                      {curUser.read ? "Read" : "Unread"}
+                                    </h6>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                     {card?.imp && (
                       <svg
                         className="absolute right-6 bottom-6 h-4 fill-purple-800"
