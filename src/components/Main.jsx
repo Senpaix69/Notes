@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import Header from "./Header";
 import Cards from "./Cards";
-import bg from "../images/bg.jpg";
+import bg from "../images/bg1.jpg";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import plus from "../images/plus.png";
@@ -296,13 +296,13 @@ const Main = ({ logOut, user, setUser }) => {
                 Shared
               </button>
             </ul>
-            <div className="text-white backdrop-blur-sm border-2 p-2 px-4 text-sm mx-2 rounded-md flex items-start justify-start gap-1 flex-col">
+            <div className="bg-purple-200 p-2 px-4 text-sm mx-2 rounded-md flex items-start justify-start gap-1 flex-col">
               <p>
-                <span className="font-semibold text-gray-200">Profile:</span>{" "}
+                <span className="font-semibold text-green-900">Profile:</span>{" "}
                 You can edit your profile and nickname
               </p>
               <p>
-                <span className="font-semibold text-gray-200">Links:</span> You
+                <span className="font-semibold text-green-900">Links:</span> You
                 can add multiple links
               </p>
             </div>
@@ -334,7 +334,7 @@ const Main = ({ logOut, user, setUser }) => {
           alt="plus"
           className={`transition-opacity duration-500 ${
             menu ? "opacity-0 -z-10" : "opacity-100 z-20"
-          } h-14 bg-white border-2 rounded-full`}
+          } h-14 bg-white rounded-full`}
         />
       </button>
       <ToastContainer

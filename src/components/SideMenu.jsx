@@ -2,7 +2,7 @@ import React from "react";
 
 const SideMenu = ({ user, logOut, handleProfile }) => {
   return (
-    <div className="h-screen relative rounded-r-lg bg-purple-800 bg-opacity-80 text-white">
+    <div className="h-screen relative rounded-r-lg bg-purple-300 bg-opacity-80">
       <div className="p-6">
         <div className="flex items-center justify-start gap-2">
           <img

@@ -104,7 +104,7 @@ const ShowCard = ({
   };
   return (
     <div className="h-screen overflow-hidden overflow-y-scroll scrollbar-hide">
-      <div className="fixed w-full max-w-[600px] top-0 bg-purple-800 text-white px-3 py-4 flex items-center font-bold gap-3 z-50">
+      <div className="fixed w-full max-w-[600px] top-0 bg-purple-400 px-3 py-4 flex items-center font-bold gap-3 z-50">
         <button
           type="button"
           onClick={() => {
@@ -228,12 +228,12 @@ const ShowCard = ({
           </div>
         </div>
 
-        <div className="bg-purple-800 bg-opacity-40 text-white backdrop-blur-sm rounded-lg py-6 px-2">
+        <div className="bg-slate-100 bg-opacity-50 backdrop-blur-sm rounded-lg py-6 px-2">
           {card && (
             <div className="mt-4 mx-2 flex justify-start items-start flex-col">
               {!editNote ? (
                 <>
-                  <h1 className="font-bold text-lg text-fuchsia-100">
+                  <h1 className="font-bold text-lg text-purple-800">
                     {card.title}
                   </h1>
                   <div className="border-2 border-purple-500 w-full"></div>
@@ -292,7 +292,7 @@ const ShowCard = ({
                           >
                             <h1 className="font-bold">Link {ind + 1}:</h1>
                             <a
-                              className="text-blue-200 underline underline-offset-2"
+                              className="text-blue-700 underline underline-offset-2"
                               href={link.src}
                               target="_top"
                               rel="noreferrer"
@@ -344,7 +344,7 @@ const ShowCard = ({
                       )}
                     {card?.imp && (
                       <svg
-                        className="absolute right-6 bottom-6 h-4 fill-fuchsia-500"
+                        className="absolute right-6 bottom-6 h-4 fill-purple-800"
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 576 512"
                       >
