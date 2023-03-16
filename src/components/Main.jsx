@@ -21,7 +21,7 @@ import AddCard from "./AddCard";
 import ShowCard from "./ShowCard";
 import Loading from "./Loading";
 import SideMenu from "./SideMenu";
-import { deleteFile, formatDate } from "../utils";
+import { formatDate } from "../utils";
 import ProfileForm from "./Profile";
 
 const Main = ({ logOut, user, setUser }) => {
@@ -89,11 +89,13 @@ const Main = ({ logOut, user, setUser }) => {
   const deleteNote = async (id, attachments) => {
     if (window.confirm("Confirm Delete?")) {
       const toastId = toast.loading("Deleting...");
-      if (attachments) {
-        for (const attachment of attachments || []) {
-          await deleteFile(attachment);
-        }
-      }
+
+      // if (attachments) {
+      //   for (const attachment of attachments || []) {
+      //     await deleteFile(attachment);
+      //   }
+      // }
+
       deleteDoc(doc(collRef, `/${id}`))
         .then(() => {
           toast.done(toastId);
@@ -107,7 +109,7 @@ const Main = ({ logOut, user, setUser }) => {
     }
   };
 
-  const updateNote = (id, formData, setLoading, setEditNote, arg) => {
+  const updateNote = (id, formData, setLoading, setEditNote) => {
     updateDoc(doc(collRef, `/${id}`), formData)
       .then(() => {
         setCardShow({ data: formData, id: id });
@@ -115,6 +117,7 @@ const Main = ({ logOut, user, setUser }) => {
         setEditNote && setEditNote(false);
       })
       .catch((err) => alert(err.message));
+
   };
 
   const switchList = (ind) => {
@@ -179,7 +182,7 @@ const Main = ({ logOut, user, setUser }) => {
         <section hidden={addCard || cardShow === undefined || editProfile}>
           <ShowCard
             toast={toast}
-            user={{ uid: user.uid, name: user.name }}
+            user={{ uid: user.uid, name: user.name, username: user.username }}
             deleteNote={deleteNote}
             setCardShow={setCardShow}
             card={cardShow?.data}
@@ -201,7 +204,7 @@ const Main = ({ logOut, user, setUser }) => {
           <AddCard
             toast={toast}
             setAddCard={setAddCard}
-            user={{ uid: user.uid, name: user.name }}
+            user={{ uid: user.uid, name: user.name, username: user.username }}
             addDoc={addDoc}
             collRef={collRef}
           />

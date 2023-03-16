@@ -28,6 +28,7 @@ export const deleteFile = async (url) => {
 };
 
 export const uploadFile = async (file, name) => {
+  console.log(name);
   const storageRef = ref(storage, `${name}_data/${name + uuidv4()}`);
   const uploadTask = uploadBytesResumable(storageRef, file);
 

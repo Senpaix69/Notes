@@ -18,7 +18,12 @@ const AddCard = ({ setAddCard, user, toast, addDoc, collRef }) => {
     const attachmentURLs = [];
     try {
       for (const attachment of newImages || []) {
-        attachmentURLs.push(await uploadFile(attachment, user.name));
+        attachmentURLs.push(
+          await uploadFile(
+            attachment,
+            user?.username || user.name.split(" ").join("").toLowerCase()
+          )
+        );
       }
     } catch (error) {
       toast.done(toastId);

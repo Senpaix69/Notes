@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deleteFile, formatDate, uploadFile, getUnread } from "../utils";
+import { formatDate, uploadFile, getUnread } from "../utils";
 import butterFly from "../images/butterfly.png";
 import loadingImg from "../images/loadingImg.gif";
 import Form from "./Form";
@@ -31,31 +31,44 @@ const ShowCard = ({
       setTitleActive(true);
       setTextActive(true);
       if (getUnread(card.users, user.name)) {
-        console.log("first");
+        updateNote(id, {
+          ...formData,
+          users: card.users.map((cuser) => {
+            if (cuser.name === user.name.toLowerCase()) {
+              return {
+                ...cuser,
+                read: true,
+              };
+            }
+            return cuser;
+          }),
+        });
       }
     }
   }, [card]);
 
   const handleSubmit = async () => {
+    const username = card.name.split(" ").join("").toLowerCase();
     setLoading(true);
-    const toastId = toast.loading("Uploading file...");
+    const toastId = toast.loading("Updating Note...");
     const attachmentURLs = [];
     try {
-      const deletedAttachments = card.attachment.filter(
-        (a) => !formData.attachment.includes(a)
-      );
-      await Promise.all(deletedAttachments.map((a) => deleteFile(a)));
+      // const deletedAttachments = card.attachment.filter(
+      //   (a) => !formData.attachment.includes(a)
+      // );
+      // await Promise.all(deletedAttachments.map((a) => deleteFile(a)));
+
       for (let i = 0; i < formData.attachment.length; i++) {
         const attachment = formData.attachment[i];
         if (!card.attachment.includes(attachment)) {
-          const attachmentURL = await uploadFile(attachment, user);
+          const attachmentURL = await uploadFile(attachment, username);
           attachmentURLs.push(attachmentURL);
         } else {
           attachmentURLs.push(attachment);
         }
       }
       for (const attachment of newImages || []) {
-        attachmentURLs.push(await uploadFile(attachment, user));
+        attachmentURLs.push(await uploadFile(attachment, username));
       }
     } catch (error) {
       toast.done(toastId);

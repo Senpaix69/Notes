@@ -8,9 +8,9 @@ const SideMenu = ({ user, logOut, handleProfile }) => {
           <img
             src={user.profile || user.profilePic}
             alt="profile"
-            className="rounded-full h-10 w-10 border-2 border-purple-900 p-[1px]"
+            className="rounded-full h-12 w-12 border-2 border-purple-900 p-[1px]"
           />
-          <div>
+          <div className="-space-y-1">
             <h1 className="text-lg font-bold">{user.nickname || user.name}</h1>
             <h1 className="text-xs font-light">
               @{user.username || "Please login again"}
