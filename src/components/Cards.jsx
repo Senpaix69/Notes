@@ -15,10 +15,10 @@ const Cards = ({ card, setCardShow, user }) => {
     <div className="relative p-1 px-2 w-full backdrop-blur-sm">
       <button
         onClick={() => setCardShow(card)}
-        className="w-full bg-slate-100 bg-opacity-50 py-3 px-4 rounded-lg"
+        className="w-full border-2 text-white bg-opacity-50 py-3 px-4 rounded-lg"
       >
         <div className="flex items-start justify-start flex-col">
-          <h1 className="font-bold text-purple-800 flex items-center justify-center gap-4">
+          <h1 className="text-fuchsia-400 font-bold flex items-center justify-center gap-4">
             {data?.title}{" "}
             {user.uid === "FmxmGuIQ75dvrYhTbk1E0bH0YJW2" && (
               <span className="text-xs">{"(" + data.name + ")"}</span>
@@ -27,10 +27,10 @@ const Cards = ({ card, setCardShow, user }) => {
               {getUnread() ? "new" : ""}
             </span>
           </h1>
-          <p className="text-sm font-semibold truncate max-w-[300px] text-slate-800">
+          <p className="text-sm font-semibold truncate max-w-[300px]">
             {data.text}
           </p>
-          <div className="text-[10px] mt-1 text-slate-800 flex items-center justify-between w-full">
+          <div className="text-[10px] mt-1 flex items-center justify-between w-full">
             <h6>{data?.date}</h6>
             <div className="flex items-center justify-center gap-2">
               <span>{data.attachment?.length > 0 ? "Attachment" : ""}</span>
