@@ -296,16 +296,6 @@ const Main = ({ logOut, user, setUser }) => {
                 Shared
               </button>
             </ul>
-            <div className="bg-purple-200 p-2 px-4 text-sm mx-2 rounded-md flex items-start justify-start gap-1 flex-col">
-              <p>
-                <span className="font-semibold text-green-900">Profile:</span>{" "}
-                You can edit your profile and nickname
-              </p>
-              <p>
-                <span className="font-semibold text-green-900">Links:</span> You
-                can add multiple links
-              </p>
-            </div>
             {!loading ? (
               filteredNotesBySearch(filteredNotesByName(cards))?.map(
                 (card, index) => (
