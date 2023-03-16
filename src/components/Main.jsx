@@ -130,9 +130,7 @@ const Main = ({ logOut, user, setUser }) => {
         card.data.name.toLowerCase().includes(search.toLowerCase()) ||
         card.data.text.toLowerCase().includes(search.toLowerCase()) ||
         card.data.date.toLowerCase().includes(search.toLowerCase()) ||
-        card.data.title.toLowerCase().includes(search.toLowerCase()) ||
-        card.data.link.toLowerCase().includes(search.toLowerCase()) ||
-        card.data.label.toLowerCase().includes(search.toLowerCase())
+        card.data.title.toLowerCase().includes(search.toLowerCase())
     );
   };
 
@@ -149,7 +147,9 @@ const Main = ({ logOut, user, setUser }) => {
         );
       } else if (sortBy === 0) {
         return (
-          (card.data.uid === user.uid && card.data.users.length === 0) ||
+          (card.data.uid === user.uid &&
+            card.data.users.length === 0 &&
+            card.data.attachment.length === 0) ||
           !isSenpai
         );
       } else if (sortBy === 2) {
