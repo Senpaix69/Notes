@@ -32,7 +32,7 @@ const ShowCard = ({
       setTextActive(true);
       if (getUnread(card.users, user.name)) {
         updateNote(id, {
-          ...formData,
+          ...card,
           users: card.users.map((cuser) => {
             if (cuser.name === user.name.toLowerCase()) {
               return {
