@@ -117,7 +117,6 @@ const Main = ({ logOut, user, setUser }) => {
         setEditNote && setEditNote(false);
       })
       .catch((err) => alert(err.message));
-
   };
 
   const switchList = (ind) => {
@@ -149,7 +148,10 @@ const Main = ({ logOut, user, setUser }) => {
             : u.toLowerCase().includes(lowerCaseName)
         );
       } else if (sortBy === 0) {
-        return card.data.uid === user.uid || !isSenpai;
+        return (
+          (card.data.uid === user.uid && card.data.users.length === 0) ||
+          !isSenpai
+        );
       } else if (sortBy === 2) {
         return (
           card.data.attachment.length > 0 &&
